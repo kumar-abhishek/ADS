@@ -5,7 +5,7 @@ using namespace std;
 
 #define MAXV 1000       /* maximum number of vertices */
 struct edgeNode {
-	int y; /* adjacency info */
+	int endPoint; /* adjacency info */
 	int weight; /* edge weight, if any */
 	struct edgeNode *next;     /* next edge in list */
 } ;
@@ -28,7 +28,7 @@ void insertEdge(graph *g, int x, int y, int cost)
 	edgeNode *p; /* temporary pointer */
 	p = new edgeNode;
 	p->weight = cost;
-	p->y = y;
+	p->endPoint = y;
 	p->next = g->edges[x];
 	g->edges[x] = p; /* insert at head of list */
 }
@@ -57,7 +57,7 @@ void printGraph(graph *g)    //print graph:
         {
                 struct edgeNode *temp = g->edges[i];
                 cout<<endl<<"edges from vertex  "<< i <<": ";
-                while(temp!=NULL) { cout<< temp->y << " " << temp->weight<< "\t";temp=temp->next;}
+                while(temp!=NULL) { cout<< temp->endPoint << " " << temp->weight<< "\t";temp=temp->next;}
         }
 }
 
