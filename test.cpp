@@ -100,8 +100,9 @@ void DIJKSTRA(graph *g,int sourceVertex)
 		}
 		visited[minIndex] = true;
 	}
-		cout<<endl<< "d array is ";
-		for(int j =0;j<g->nVertices;j++) cout<<" " <<  d[j];
+		//cout<<endl<< "d array is ";
+		cout<<endl;
+		for(int j =0;j<g->nVertices;j++) cout<<  d[j]<<" ";
 }
 
 
@@ -110,9 +111,8 @@ int main()
 	graph *g = new graph;
 	initializeGraph(g);
 	readGraph(g);
-	printGraph(g);
+//	printGraph(g);
 	int sourceVertex = 0;
-//	cout<<endl<< g->nVertices<<" "<<g->nEdges;
-	DIJKSTRA(g,sourceVertex);
+	for(int sourceVertex = 0;sourceVertex < g->nVertices;sourceVertex++) 	DIJKSTRA(g,sourceVertex);
 }
 
