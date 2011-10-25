@@ -1,22 +1,26 @@
 #include<iostream>
 using namespace std;
-#define MAXDEGREE 500
+#define MAXDEGREE 10 //max degree for a 500 vertex binomail heap cant be more than lg(500) = 9 <=10 
 struct node
 {
-	int data;
+	int data; //used to denote vertex endPoint for dijkstra
+	int distance; //as an estimate of shortest distance : for dijkstra
 	int degree;
 	node *child;
 	node *sibling;
+	node *parent; //needed for doing decrease-key operation
 };
 
-void binomialHeapInsert(node * &root,int value)
+node * binomialHeapInsert(node * &root,int value)
 {
 		node *temp = new node;
 		temp->data = value;
 		temp->child = NULL;
+		temp->parent = NULL; 
 		if(root!=NULL){ node *t = root->sibling; root->sibling = temp; temp->sibling = t; } 
-		else { root = temp; root->sibling=root;root->degree = 0;      } 
+		else { root = temp; root->sibling=root;root->degree = 0;} 
 		if(root->data > root->sibling->data) root= root->sibling; //fix root pointer to point to node with minimum value.
+		return temp; //return the pointer to newly inserted node.
 }
 
 void printBinomialHeap(node *root)
@@ -106,18 +110,52 @@ int removeMin(node * &root) //delete the min node and return its data
 	return toReturn;
 }
 
-void decreaseKey();
+void decreaseKey(node * &root, node * &t, int newValue )  // t being pointer to the the node whose decrease key is to be performed.
+{
+	t->data = newValue;//TODO: change data to distance later
+
+	//swap node with its parent if it violates  min heap property
+	while( (t->parent != NULL) && (t->distance < t->parent->distance))
+	{
+		node *t1 = t->child;
+		node *t2 = t->sibling;
+
+		node *p = t->parent;
+		node *p1 = p->child;
+		node *p2 = p->sibling;
+
+		//swap node and its parent.
+		node *temp = p;
+		p = t; 
+		t = temp;
+		
+		p->child->parent = p;
+		p->parent = t; 
+		t->parent->child = t;
+
+		node *q = p; //we have to come back to p
+		while(q->sibling != p)
+		{
+			q =  q->sibling;
+		}
+		q->sibling = p;	
+
+
+	}
+	//fix the root pointer if needed
+	if(t->data < root->data)    //TODO:change data to distance later 
+		root = t;
+}
 
 
 
 int main()
 {
 	node * root=NULL;
+	node * t1=binomialHeapInsert(root,3);
+	node * t2=binomialHeapInsert(root,2);
+	node * t3=binomialHeapInsert(root,1);
 /*
-	binomialHeapInsert(root,3);
-	binomialHeapInsert(root,2);
-	binomialHeapInsert(root,1);
-*/
 	binomialHeapInsert(root,12);
 	binomialHeapInsert(root,15);
 	binomialHeapInsert(root,5);
@@ -125,9 +163,10 @@ int main()
 	binomialHeapInsert(root,6);
 	binomialHeapInsert(root,4);
 	binomialHeapInsert(root,3);
+*/
 	printBinomialHeap(root);
-
-	 (removeMin(root));
+	decreaseKey(root,t2,-1 ); 
+	// (removeMin(root));
 
 	//cout<<"new root's data"<< root->data<<endl;
 	cout<<endl<<endl;
