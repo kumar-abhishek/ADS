@@ -48,6 +48,55 @@ node * meld(node * &root1,node * &root2)
 	else return root2;
 }
 
+node * pairwiseCombine(node * &root1, node * &root2)
+{
+	//do pairwise combine
+	//node * sibRoot = root->sibling;
+	node * root = root1;
+	node * sibRoot = root2;
+
+	if(sibRoot->distance < root->distance)
+	{
+		node *t = sibRoot->child;
+		node *sRoot = root->sibling;//save Root's sibling
+		sibRoot->child = root;
+		root->parent = sibRoot;
+		root->sibling = t;
+
+		//fix circular link list pointer
+		node *temp = t;
+		while(temp->sibling != t)	temp = temp->sibling;//reach the last node in cicular linked list
+		temp->sibling = root;
+
+		//fix the case when sibRoot's sibling points to root
+		sibRoot->sibling = sRoot;
+
+		root = sibRoot;//set root to pointer to new root
+		++(root->degree);
+	}
+	else
+	{
+		node *t  = root->sibling;
+//		cout<< "t->data: "  << t->data<<endl;
+		node *sSibRoot = sibRoot->sibling; //save sibRoot's sibling 
+		root->child = sibRoot;
+		sibRoot->parent = root;
+		sibRoot->sibling = t;	
+
+		//fix circular link list pointer
+		node *temp = t;
+		while(temp->sibling != t)	temp = temp->sibling;//reach the last node in cicular linked list
+		temp->sibling = sibRoot;
+
+		//fix the case when sibRoot's sibling points to root
+		root->sibling = sSibRoot;
+		++(root->degree);
+		cout<<"bheap inside pairwise Combine"<<endl;
+		printBinomialHeap(root);
+	}
+}
+
+
 node * removeMin(node * &root) //delete the min node and return it
 {
 	cout<<"removeMin root:" << root->data <<"| removeMin distance:  " <<root->distance <<endl;
@@ -67,66 +116,35 @@ node * removeMin(node * &root) //delete the min node and return it
 		delete(toCopy);//delete next node
 	}
 	if(rootChild !=NULL)	root = meld(rootChild,root); //meld the new root and old root's child
-	
+
 	cout<<"Bheap after melding " <<endl;
 	printBinomialHeap(root);
 
 	//do pairwise combine
 	node *storedRoot = root; //store root pointer temporarily.
-	cout<< "storedRoot->Data: "<<storedRoot->data<<"storedRoot->distance :  "<< storedRoot->distance<< " storedRoot->degree: "<<storedRoot->degree<<endl;
-	treeTable[root->degree] = root; //hash root to treeTable
+	cout<< "before pairwise combine: storedRoot->Data: "<<storedRoot->data<<"storedRoot->distance :  "<< storedRoot->distance<< " storedRoot->degree: "<<storedRoot->degree<<endl;
+	cout<<"Bheap before pairwise combine " <<endl;
+	printBinomialHeap(root);
 
-	//while(root->sibling != storedRoot) //if we reach again to the beginning of circular linked list
-	//do pairwise combine until we have all trees of different degrees.
+	while(1)
 	{
-		node * sibRoot = root->sibling;
-		int tempDegree = sibRoot->degree;
-		if(treeTable[sibRoot->degree] != NULL )  //entry exists in treeTable
+		if(treeTable[root->degree] != NULL)
 		{
-			if(sibRoot->distance < root->distance)
-			{
-				node *t = sibRoot->child;
-				node *sRoot = root->sibling;//save Root's sibling
-				sibRoot->child = root;
-				root->parent = sibRoot;
-				root->sibling = t;
-				
-				//fix circular link list pointer
-				node *temp = t;
-				while(temp->sibling != t)	temp = temp->sibling;//reach the last node in cicular linked list
-				temp->sibling = root;
-
-				//fix the case when sibRoot's sibling points to root
-				sibRoot->sibling = sRoot;
-
-				root = sibRoot;//set root to pointer to new root
-				++(root->degree);
-			}
+			if(treeTable[root->degree] == root) 
+				break;
 			else
 			{
-				node *t  = root->sibling;
-				node *sSibRoot = sibRoot->sibling; //save sibRoot's sibling 
-				root->child = sibRoot;
-				sibRoot->parent = root;
-				sibRoot->sibling = t;	
-
-				//fix circular link list pointer
-				node *temp = t;
-				while(temp->sibling != t)	temp = temp->sibling;//reach the last node in cicular linked list
-				temp->sibling = sibRoot;
-
-				//fix the case when sibRoot's sibling points to root
-				root->sibling = sSibRoot;
-				++(root->degree);
+				int tempDegree = root->degree;
+				pairwiseCombine(root, treeTable[root->degree]);
+				treeTable[tempDegree] = NULL;
 			}
-			treeTable[root->degree] = root;
-			treeTable[tempDegree] = NULL;
 		}
 		else
-			treeTable[sibRoot->degree] = sibRoot;
+		{
+			treeTable[root->degree] = root;
+			root = root->sibling;
+		}
 	}
-
-	cout<<endl<< endl<<"i m here "<<endl<<endl;
 
 	cout<<"Bheap after pairwise combine " <<endl;
 	printBinomialHeap(root);
