@@ -67,13 +67,17 @@ node * removeMin(node * &root) //delete the min node and return it
 		delete(toCopy);//delete next node
 	}
 	if(rootChild !=NULL)	root = meld(rootChild,root); //meld the new root and old root's child
+	
+	cout<<"Bheap after melding " <<endl;
+	printBinomialHeap(root);
 
 	//do pairwise combine
 	node *storedRoot = root; //store root pointer temporarily.
 	cout<< "storedRoot->Data: "<<storedRoot->data<<"storedRoot->distance :  "<< storedRoot->distance<< " storedRoot->degree: "<<storedRoot->degree<<endl;
 	treeTable[root->degree] = root; //hash root to treeTable
 
-	while(root->sibling != storedRoot) //if we reach again to the beginning of circular linked list
+	//while(root->sibling != storedRoot) //if we reach again to the beginning of circular linked list
+	//do pairwise combine until we have all trees of different degrees.
 	{
 		node * sibRoot = root->sibling;
 		int tempDegree = sibRoot->degree;
@@ -96,7 +100,7 @@ node * removeMin(node * &root) //delete the min node and return it
 				sibRoot->sibling = sRoot;
 
 				root = sibRoot;//set root to pointer to new root
-				++root->degree;
+				++(root->degree);
 			}
 			else
 			{
@@ -113,7 +117,7 @@ node * removeMin(node * &root) //delete the min node and return it
 
 				//fix the case when sibRoot's sibling points to root
 				root->sibling = sSibRoot;
-				++root->degree;
+				++(root->degree);
 			}
 			treeTable[root->degree] = root;
 			treeTable[tempDegree] = NULL;
@@ -123,6 +127,11 @@ node * removeMin(node * &root) //delete the min node and return it
 	}
 
 	cout<<endl<< endl<<"i m here "<<endl<<endl;
+
+	cout<<"Bheap after pairwise combine " <<endl;
+	printBinomialHeap(root);
+
+
 	//now fix the root pointer to point to node with min data
 	storedRoot = root; //store root pointer temporarily.
 	node * potentialRoot=root;

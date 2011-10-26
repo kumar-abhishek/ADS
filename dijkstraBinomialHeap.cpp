@@ -93,21 +93,20 @@ void dijkstraBinomialHeap(graph *g,int sourceVertex)
 	printBinomialHeap(root) ;
 	cout<<endl;
 	
-	for(int k =0;k< 3;k++)
+	for(int k =0;k< 1;k++)
 	{
 		cout<< "binomialHeap when k = " << k<< endl ; printBinomialHeap(root) ;
 		node * min = removeMin(root); 
 //		if(min) cout<<"here " <<min->distance<< " "<<endl ;
-		int minIndex = min->data;		
-		cout<<"minIndex is "<<minIndex<<"| min->distance is "<<min->distance<< " "<<endl ;;
+//		int minIndex = min->data;		
+//		cout<<"minIndex is "<<minIndex<<"| min->distance is "<<min->distance<< " "<<endl ;;
 		printBinomialHeap(root);
-		struct edgeNode *e = g->edges[minIndex] , *temp;temp = e;
-		//cout<< e->endPoint << " "<< e->weight<< endl;
-
+//		struct edgeNode *e = g->edges[minIndex] , *temp;temp = e;
+//		cout<< e->endPoint << " "<< e->weight<< endl;
+/*
 		
 		while(e)
 		{
-			//relaxBinomialHeap(minIndex, v->endPoint, v->weight);
 			int u = minIndex, v = e->endPoint, w = e->weight;
 			
 			if(d[v] > d[u] + w) 
@@ -118,13 +117,13 @@ void dijkstraBinomialHeap(graph *g,int sourceVertex)
 			e=e->next;
 		}
 		visited[minIndex] = true;
-		cout<<endl<<"distance array is: ";
+*/
+		cout<<endl<<endl<<"distance array is: ";
 		for(int j =0;j<g->nVertices;j++) cout<<  d[j]<<" ";
 
-
 	}
-	cout<<endl;
-	for(int j =0;j<g->nVertices;j++) cout<<  d[j]<<" ";
+//	cout<<endl<<"distance array is:  ";
+//	for(int j =0;j<g->nVertices;j++) cout<<  d[j]<<" ";
 }
 
 

@@ -11,15 +11,16 @@ struct node
 	node *parent; //needed for doing decrease-key operation
 };
 
-node * binomialHeapInsert(node * &root,int value)
+node * binomialHeapInsert(node * &root,int endPoint, int distance)
 {
 		node *temp = new node;
-		temp->data = value;
+		temp->data = endPoint;
+		temp->distance = distance;
 		temp->child = NULL;
 		temp->parent = NULL; 
 		if(root!=NULL){ node *t = root->sibling; root->sibling = temp; temp->sibling = t; } 
 		else { root = temp; root->sibling=root;root->degree = 0;} 
-		if(root->data > root->sibling->data) root= root->sibling; //fix root pointer to point to node with minimum value.
+		if(root->distance > root->sibling->distance) root= root->sibling; //fix root pointer to point to node with minimum value.
 		return temp; //return the pointer to newly inserted node.
 }
 
@@ -46,14 +47,14 @@ node * meld(node * &root1,node * &root2)
 	else return root2;
 }
 
-int removeMin(node * &root) //delete the min node and return its data
+node * removeMin(node * &root) //delete the min node and return it
 {
 //	cout<<"removeMin root:" << root->data <<endl;
 	if(root ==NULL) return NULL;
 	node * treeTable[MAXDEGREE];
 	for(int i=0;i<MAXDEGREE;i++) treeTable[i] = NULL;
 
-	int toReturn = root->data;
+	node * toReturn = root;
 	node *rootChild = root->child;
 	//cout<<"before return"<< toReturn<<endl;
 
@@ -61,6 +62,7 @@ int removeMin(node * &root) //delete the min node and return its data
 	if(toCopy !=NULL)
 	{
 		root->data = toCopy->data; root->degree = toCopy->degree; root->child = toCopy->child; root->sibling = toCopy->sibling; //copy next node to root node
+		root->distance = toCopy->distance;
 		delete(toCopy);//delete next node
 	}
 	if(rootChild !=NULL)	root = meld(rootChild,root); //meld the new root and old root's child
@@ -76,7 +78,7 @@ int removeMin(node * &root) //delete the min node and return its data
 		int tempDegree = sibRoot->degree;
 		if(treeTable[sibRoot->degree] != NULL )  //entry exists in treeTable
 		{
-			if(sibRoot->data < root->data)
+			if(sibRoot->distance < root->distance)
 			{
 				//node *t = sibRoot->sibling;
 				sibRoot->child = root;
@@ -103,7 +105,7 @@ int removeMin(node * &root) //delete the min node and return its data
 	while(root->sibling != storedRoot)
 	{
 		root=root->sibling;
-		if(root->data < potentialRoot->data) potentialRoot = root;
+		if(root->distance < potentialRoot->distance) potentialRoot = root;
 	}
 	root=potentialRoot;
 	//cout<<"new root's data"<< root->data<<endl;
@@ -152,9 +154,10 @@ void decreaseKey(node * &root, node * &t, int newValue )  // t being pointer to 
 int main()
 {
 	node * root=NULL;
-	node * t1=binomialHeapInsert(root,3);
-	node * t2=binomialHeapInsert(root,2);
-	node * t3=binomialHeapInsert(root,1);
+	node * t1=binomialHeapInsert(root,0,0);
+	node * t2=binomialHeapInsert(root,1,9999);
+	node * t3=binomialHeapInsert(root,2,9999);
+	node * t4=binomialHeapInsert(root,3,9999);
 /*
 	binomialHeapInsert(root,12);
 	binomialHeapInsert(root,15);
@@ -165,8 +168,10 @@ int main()
 	binomialHeapInsert(root,3);
 */
 	printBinomialHeap(root);
-	decreaseKey(root,t2,-1 ); 
-	// (removeMin(root));
+	cout<<" removeMin->distance: "<<removeMin(root)->distance;//delete the min node and return it
+//	decreaseKey(root,t2,-1 ); 
+	cout<<endl<<endl;
+	cout<<" removeMin->distance: "<<removeMin(root)->distance;//delete the min node and return it
 
 	//cout<<"new root's data"<< root->data<<endl;
 	cout<<endl<<endl;
