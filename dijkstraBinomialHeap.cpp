@@ -9,6 +9,7 @@ using namespace std;
 #define INF 99999
 
 int d[MAXV];
+node * heapArray[500]; //make it local later
 struct edgeNode {
 	int endPoint; /* adjacency info */
 	int weight; /* edge weight, if any */
@@ -85,7 +86,7 @@ void dijkstraBinomialHeap(graph *g,int sourceVertex)
 	d[sourceVertex] = 0; //distance of source vertex to source vertex is zero
 	
 	node * root = NULL;
-	node * heapArray[g->nVertices];
+//	node * heapArray[g->nVertices];
 	heapArray[0]  = binomialHeapInsert(root,sourceVertex,d[sourceVertex]);
 	for(int i = 1;i<g->nVertices;i++) heapArray[i] = binomialHeapInsert(root,i,d[i]);
 	cout<< "nVertices is " << g->nVertices<<" "<<endl;
@@ -93,30 +94,31 @@ void dijkstraBinomialHeap(graph *g,int sourceVertex)
 	printBinomialHeap(root) ;
 	cout<<endl;
 	
-	for(int k =0;k<2;k++)
+	for(int k =0;k<g->nVertices;k++)
 	{
 		cout<<endl<<endl<<endl<< "binomialHeap when k = " << k<< endl ; 
-		//printBinomialHeap(root) ;
+		for(int i = 0;i<g->nVertices;i++) if( heapArray[i] ) cout<<"i= "<<i <<" " <<heapArray[i]->data << " "<< heapArray[i]->distance<< "| ";
+		cout<<endl;
+		printBinomialHeap(root) ;
 		node * min = removeMin(root,k);
+		if(min == NULL) break; //nothing in heap, break out .
 		cout<<"for loop  "<<endl; 
-		//cout<<"new root's data"<< root->data<<endl<< "new root's child->data"<<root->child->data<<endl<<" new roots' sibling->data"<<root->sibling->data <<endl;
-
-//		if(min) cout<<"here " <<min->distance<< " "<<endl ;
 		int minIndex = min->data;		
 		cout<<"minIndex is "<<minIndex<<endl    ; //<<"| min->distance is "<<min->distance<< " "<< "min->child->data "<< min->child->data<< endl ;
-//		printBinomialHeap(root);
 		heapArray[minIndex] = NULL; //set the pointer to NULL as it has been removed from heap
 		struct edgeNode *e = g->edges[minIndex] , *temp;temp = e;
 		if(e==NULL) cout<<" ya";		
 		cout<<endl<<"before decrease key: bheap after k=" <<k <<endl;
-//		cout<< e->endPoint << " "<< e->weight<< endl;
+		//cout<< e->endPoint << " "<< e->weight<< endl;
 		debug(root); 
+		printBinomialHeap(root);
 		while(e != NULL)
 		{
 			cout<< "here " ;
 			int u = minIndex, v = e->endPoint, w = e->weight;
 	
-			cout << "u is: " << u<< " v is : "<<v<<"w is : " << w<<endl;	
+			cout << "u is: " << u<< " v is : "<<v<<"w is : " << w;
+			if(heapArray[v]) cout<<"| heapArray[v]:data:" << heapArray[v]->data<<endl;	
 			if(d[v] > d[u] + w) 
 			{
 				d[v] = d[u] + w;
@@ -131,7 +133,7 @@ void dijkstraBinomialHeap(graph *g,int sourceVertex)
 
 		cout<<endl<<"bheap after k=" <<k <<endl;
 		debug(root);
-		//printBinomialHeap(root);
+		printBinomialHeap(root);
 	}
 //	cout<<endl<<"distance array is:  ";
 //	for(int j =0;j<g->nVertices;j++) cout<<  d[j]<<" ";

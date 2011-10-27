@@ -11,7 +11,7 @@ struct node
 	node *sibling;
 	node *parent; //needed for doing decrease-key operation
 };
-
+extern node * heapArray[500];
 node * binomialHeapInsert(node * &root,int endPoint, int distance)
 {
 		node *temp = new node;
@@ -29,7 +29,6 @@ void printBinomialHeap(node *root)
 {
 	if(root == NULL) return;
 	cout<<" "<<root->data<<" "<<root->distance<<endl;
-
 	printBinomialHeap(root->child);
 	node *storedRoot = root;
 	root=root->sibling;
@@ -39,6 +38,7 @@ void printBinomialHeap(node *root)
 
 node * meld(node * &root1,node * &root2)
 {
+	cout<<endl<<"Inside meld()" <<endl;
 	if(root2 == NULL) return root1;
 	if(root1 == NULL) return root2;
 	node *temp1 = root1->sibling;
@@ -102,7 +102,7 @@ node * pairwiseCombine(node * &root1, node * &root2)
 		++(root->degree);
 	}
 	cout<<"bheap inside pairwise Combine"<<endl;
-//	printBinomialHeap(root);
+	printBinomialHeap(root);
 	cout<<"root->degree:  " << root->degree<<endl;
 	return root;
 }
@@ -110,17 +110,20 @@ node * pairwiseCombine(node * &root1, node * &root2)
 void debug(node * root)
 {
 	cout<<endl<<endl<<"inside debug function";
-	if(root) cout<<"new root's data: "<< root->data<<endl;
-	if(root->child) cout<<" new root's child data : "<<root->child->data<<endl;
-	if(root->sibling) cout<<" new roots' sibling data : "<<root->sibling->data <<endl;
-	if(root->sibling && root->sibling->sibling) cout<< "new root's sibling->sibling->data: " <<root->sibling->sibling->data<<endl<<endl;
-	if(root->child && root->child->sibling) cout<< "new root's child->sibling->data: " <<root->child->sibling->data<<endl<<endl;
+	if(root) cout<<"new root's data: "<< root->data<<"|root->distance: " << root->distance<<endl;
+	if( root && root->child) cout<<"new root's child data : "<<root->child->data<<"|root->child->distance: " << root->child->distance<<endl;
+	if(root && root->sibling) cout<<"new roots' sibling data : "<<root->sibling->data <<"|root->sibling->distance: " << root->sibling->distance<<endl;
+	if( root && root->sibling && root->sibling->sibling) cout<< "new root's sibling->sibling->data: " <<root->sibling->sibling->data<<"|root->sibling->sibling->distance: " << root->sibling->sibling->distance<<endl;
+	if(root && root->child && root->child->sibling) cout<< "new root's child->sibling->data: " <<root->child->sibling->data<<"|root->child->sibling->distance: " << root->child->sibling->distance<<endl;
+	if(root && root->sibling && root->sibling->child) cout<< "new root's sibling->child->data: " <<root->sibling->child->data<<"|root->sibling->child->distance: " << root->sibling->child->distance<<endl;
+	if(root && root->child && root->child->child) cout<<"new root->child->child data : "<<root->child->child->data<<"|root->child->child->distance: " << root->child->child->distance<<endl;
+
 }
+
 node * removeMin(node * &root,int k) //delete the min node and return it
 {
-	cout<<"removeMin root:" << root->data <<"| removeMin distance:  " <<root->distance <<endl <<" root->sibling->data: " << root->sibling->data<<endl ;
-
 	if(root ==NULL) return NULL;
+	cout<<"removeMin root:" << root->data <<"| removeMin distance:  " <<root->distance <<endl <<" root->sibling->data: " << root->sibling->data<<endl ;
 	node * treeTable[MAXDEGREE];
 	for(int i=0;i<MAXDEGREE;i++) treeTable[i] = NULL;
 
@@ -130,42 +133,61 @@ node * removeMin(node * &root,int k) //delete the min node and return it
 	//cout<<"before return"<< toReturn<<endl;
 
 	cout<< " xx: ";
-	//printBinomialHeap(root);
-	node * toCopy = root->sibling;
-	node * rootPrevChild = root->child;
+//	node * toCopy = root->sibling;
 
-//	if(k==1) return NULL;
-
-//	cout<<" rootPrevChild->data" <<rootPrevChild->data<<endl;
-	if(toCopy !=NULL)
+	cout<<"before copying"<<endl;
+	debug(root);
+	printBinomialHeap(root);
+/*
+	if(toCopy !=NULL && toCopy != root)
 	{
 		root->data = toCopy->data; root->degree = toCopy->degree; root->child = toCopy->child; root->sibling = toCopy->sibling; //copy next node to root node
 		root->distance = toCopy->distance;
 		delete(toCopy);//delete next node
 	}
+	for(int i = 0;i<4;i++) if( heapArray[i] ) cout<<"i= "<<i <<" " <<heapArray[i]->data << " "<< heapArray[i]->distance<< "| ";
+	cout<<endl;
 
-	//cout<<"Bheap before melding "<< root->data <<" " <<endl;
-	//printBinomialHeap(root);
-	//if(k==1) cout<<"rootChild:  " << rootChild->data<< "root->sibling->data " << root->sibling->data<< endl;
-	//if(k==1) cout<<"new root's data"<< root->data<<endl<< "new root's child->data"<<rootChild->data<<endl<<  "rootChild->sibling->data : "<< rootChild->sibling->data  << " new roots' sibling->data"<<root->sibling->data <<endl;
+	if(toCopy == root) 
+	{
+		delete(root);
+		root = rootChild;		
+	}
+*/
+	if(root->sibling == root)
+	{
+		delete(root);
+		root = rootChild;
+	}
+	else
+	{
+		node  * sibRoot = root->sibling , *tt = root;
+		while(tt->sibling != root) {tt = tt->sibling;}
+		tt->sibling = sibRoot;
+		//	delete(root);
+		root = sibRoot;
+	}
 
-	if(rootChild !=NULL)	root->child = meld(rootChild,root->child); //meld the new root and old root's child
+	cout<<"before melding"<<endl;
+	debug(root);
+	for(int i = 0;i<4;i++) if( heapArray[i] ) cout<<"i= "<<i <<" " <<heapArray[i]->data << " "<< heapArray[i]->distance<< "| ";
+	cout<<endl;
 
+	if(rootChild !=NULL && root != rootChild)	root->child = meld(rootChild,root->child); //meld the new root and old root's child
 
-	//cout<<"Bheap after melding " <<endl;
-	//printBinomialHeap(root);
+	cout<<"after melding"<<endl;
+	debug(root);
 
 
 	//do pairwise combine
 	node *storedRoot = root; //store root pointer temporarily.
-	//cout<< "before pairwise combine: storedRoot->Data: "<<storedRoot->data<<"storedRoot->distance :  "<< storedRoot->distance<< " storedRoot->degree: "<<storedRoot->degree<<endl;
-	//cout<<"Bheap before pairwise combine " <<endl;
-	//printBinomialHeap(root);
-	cout<<endl; debug(root);
+	cout<<"before doing pairwise combine " <<endl;
+	debug(root);
 	int cnt = 0;
 	while(1)
 	{
-		if(treeTable[root->degree] != NULL)
+		if(root == NULL) break;
+		if( treeTable[root->degree] != NULL)
 		{
 			if(treeTable[root->degree] == root) 
 				break;
@@ -184,45 +206,56 @@ node * removeMin(node * &root,int k) //delete the min node and return it
 			root = root->sibling;
 		}
 //		cout<<endl;
-//		printBinomialHeap(root);
+		printBinomialHeap(root);
 //		cout<<endl;
 //		++cnt;
 //		if(cnt > 5) break;
 	}
 
 	//cout<<"Bheap after pairwise combine " <<endl;
-	//printBinomialHeap(root);
-
+	printBinomialHeap(root);
+	cout<<"after doing pariwise combine " <<endl;
 	debug(root);
+	for(int i = 0;i<4;i++) if( heapArray[i] ) cout<<"i= "<<i <<" " <<heapArray[i]->data << " "<< heapArray[i]->distance<< "| ";
+	cout<<endl;
 
 
-/*
 	//now fix the root pointer to point to node with min data
 	storedRoot = root; //store root pointer temporarily.
 	node * potentialRoot=root;
-	while(root->sibling != storedRoot)
+	int counter = 0 ;
+	while(root && root->sibling != storedRoot)
 	{
 		cout<<"inside while loop" ;
 		root=root->sibling;
 		if(root->distance < potentialRoot->distance) potentialRoot = root;
+		++counter; 
+		if(counter>5){cout<<endl<<endl<<"!!!!!!        infinite loop       !!!!!!!!!"; break;}
 	}
 	root=potentialRoot;
-	root->parent = NULL; //TODO: hack remove it later
+	if(root)  root->parent = NULL; //TODO: hack remove it later
 	//cout<<"new root's data"<< root->data<<endl<< "new root's child "<<root->child->data<<endl<<" new roots' sibling"<<root->sibling->data <<endl;
-*/
+	for(int i = 0;i<4;i++) if( heapArray[i] ) cout<<"i= "<<i <<" " <<heapArray[i]->data << " "<< heapArray[i]->distance<< "| ";
+	cout<<endl;
+
 	return toReturn;
 }
 
 void decreaseKey(node * &root, node * &t, int newValue )  // t being pointer to the the node whose decrease key is to be performed.
 {
-	if(t==NULL) return;
-	t->distance = newValue;//TODO: change data to distance later
-	if(t->parent !=NULL) cout<<" deckey n";
+	if(t->data == 0 ) return;
+	if(root ) cout<<endl<<"root->data "<<root->data; if(t) cout<< "|t->data " << t->data<<endl;
+	t->distance = newValue;
+	if(t->parent !=NULL) cout<<"deckey n"<<endl;
+	int count = 0 ;
 	//swap node with its parent if it violates  min heap property
 	while( (t->parent != NULL) && (t->distance < t->parent->distance))
 	{
+		cout<<"count: "<<count<<endl;
+		++count;
 		node *t1 = t->child;
-		node *t2 = t->sibling;
+		node *t2 = NULL;
+		if(t->sibling != t) t2 = t->sibling;
 		node *t3 = NULL;
 
 		node *p = t->parent;
@@ -233,9 +266,12 @@ void decreaseKey(node * &root, node * &t, int newValue )  // t being pointer to 
 		t->child = p;
 	 	p->parent =t;
 		p->child = t1;
-		p->sibling = t2;
+		if(t2) p->sibling = t2;
+		else p->sibling = p;
 		t->sibling = p2;
 		if(t) t->parent = t3;
+		if(t3) t3->child = t;
+		p2->sibling = t;
 
 /*	
 		node *q = p; //we have to come back to p
@@ -247,7 +283,10 @@ void decreaseKey(node * &root, node * &t, int newValue )  // t being pointer to 
 */
 	}
 	//fix the root pointer if needed
-	if(t->parent == NULL && t->distance < root->distance)    //TODO:change data to distance later 
+	if(t->parent == NULL && t->distance < root->distance)    
 		root = t;
+	cout<<"inside decrease key function: "<<endl;
+	debug(root);
+	printBinomialHeap(root);
 }
 
