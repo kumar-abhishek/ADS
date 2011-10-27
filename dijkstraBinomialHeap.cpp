@@ -93,22 +93,30 @@ void dijkstraBinomialHeap(graph *g,int sourceVertex)
 	printBinomialHeap(root) ;
 	cout<<endl;
 	
-	for(int k =0;k< 1;k++)
+	for(int k =0;k<2;k++)
 	{
-		cout<< "binomialHeap when k = " << k<< endl ; printBinomialHeap(root) ;
-		node * min = removeMin(root); 
+		cout<<endl<<endl<<endl<< "binomialHeap when k = " << k<< endl ; 
+		//printBinomialHeap(root) ;
+		node * min = removeMin(root,k);
+		cout<<"for loop  "<<endl; 
+		//cout<<"new root's data"<< root->data<<endl<< "new root's child->data"<<root->child->data<<endl<<" new roots' sibling->data"<<root->sibling->data <<endl;
+
 //		if(min) cout<<"here " <<min->distance<< " "<<endl ;
-//		int minIndex = min->data;		
-//		cout<<"minIndex is "<<minIndex<<"| min->distance is "<<min->distance<< " "<<endl ;;
-		printBinomialHeap(root);
-//		struct edgeNode *e = g->edges[minIndex] , *temp;temp = e;
+		int minIndex = min->data;		
+		cout<<"minIndex is "<<minIndex<<endl    ; //<<"| min->distance is "<<min->distance<< " "<< "min->child->data "<< min->child->data<< endl ;
+//		printBinomialHeap(root);
+		heapArray[minIndex] = NULL; //set the pointer to NULL as it has been removed from heap
+		struct edgeNode *e = g->edges[minIndex] , *temp;temp = e;
+		if(e==NULL) cout<<" ya";		
+		cout<<endl<<"before decrease key: bheap after k=" <<k <<endl;
 //		cout<< e->endPoint << " "<< e->weight<< endl;
-/*
-		
-		while(e)
+		debug(root); 
+		while(e != NULL)
 		{
+			cout<< "here " ;
 			int u = minIndex, v = e->endPoint, w = e->weight;
-			
+	
+			cout << "u is: " << u<< " v is : "<<v<<"w is : " << w<<endl;	
 			if(d[v] > d[u] + w) 
 			{
 				d[v] = d[u] + w;
@@ -117,10 +125,13 @@ void dijkstraBinomialHeap(graph *g,int sourceVertex)
 			e=e->next;
 		}
 		visited[minIndex] = true;
-*/
+
 		cout<<endl<<endl<<"distance array is: ";
 		for(int j =0;j<g->nVertices;j++) cout<<  d[j]<<" ";
 
+		cout<<endl<<"bheap after k=" <<k <<endl;
+		debug(root);
+		//printBinomialHeap(root);
 	}
 //	cout<<endl<<"distance array is:  ";
 //	for(int j =0;j<g->nVertices;j++) cout<<  d[j]<<" ";
