@@ -2,6 +2,9 @@
 using namespace std;
 
 #define MAXDEGREE 10 //max degree for a 500 vertex binomail heap cant be more than lg(500) = 9 <=10 
+#define MAXV 1000       /* maximum number of vertices */
+#define INF 99999
+
 struct node
 {
 	int data; //used to denote vertex endPoint for dijkstra
@@ -11,7 +14,9 @@ struct node
 	node *sibling;
 	node *parent; //needed for doing decrease-key operation
 };
-extern node * heapArray[500];
+
+node * heapArray[500];
+
 node * binomialHeapInsert(node * &root,int endPoint, int distance)
 {
 		node *temp = new node;
@@ -38,7 +43,7 @@ void printBinomialHeap(node *root)
 
 node * meld(node * &root1,node * &root2)
 {
-	cout<<endl<<"Inside meld()" <<endl;
+//	cout<<endl<<"Inside meld()" <<endl;
 	if(root2 == NULL) return root1;
 	if(root1 == NULL) return root2;
 	node *temp1 = root1->sibling;
@@ -101,9 +106,9 @@ node * pairwiseCombine(node * &root1, node * &root2)
 		root->sibling = sSibRoot;
 		++(root->degree);
 	}
-	cout<<"bheap inside pairwise Combine"<<endl;
+	//cout<<"bheap inside pairwise Combine"<<endl;
 	//printBinomialHeap(root);
-	cout<<"root->degree:  " << root->degree<<endl;
+	//cout<<"root->degree:  " << root->degree<<endl;
 	return root;
 }
 
@@ -124,7 +129,7 @@ void debug(node * root)
 node * removeMin(node * &root,int k) //delete the min node and return it
 {
 	if(root ==NULL) return NULL;
-	cout<<"removeMin root:" << root->data <<"| removeMin distance:  " <<root->distance <<endl <<" root->sibling->data: " << root->sibling->data<<endl ;
+//	cout<<"removeMin root:" << root->data <<"| removeMin distance:  " <<root->distance <<endl <<" root->sibling->data: " << root->sibling->data<<endl ;
 	node * treeTable[MAXDEGREE];
 	for(int i=0;i<MAXDEGREE;i++) treeTable[i] = NULL;
 
@@ -133,11 +138,11 @@ node * removeMin(node * &root,int k) //delete the min node and return it
 //	cout<<endl<<"rootChild->data: "<< root->child->data<<endl;
 	//cout<<"before return"<< toReturn<<endl;
 
-	cout<< " xx: ";
+//	cout<< " xx: ";
 //	node * toCopy = root->sibling;
 
-	cout<<"before copying"<<endl;
-	debug(root);
+	//cout<<"before copying"<<endl;
+	//debug(root);
 	//printBinomialHeap(root);
 /*
 	if(toCopy !=NULL && toCopy != root)
@@ -169,21 +174,22 @@ node * removeMin(node * &root,int k) //delete the min node and return it
 		root = sibRoot;
 	}
 
-	cout<<"before melding"<<endl;
-	debug(root);
-	for(int i = 0;i<6;i++) if( heapArray[i] ) cout<<"i= "<<i <<" " <<heapArray[i]->data << " "<< heapArray[i]->distance<< "| ";
-	cout<<endl;
+	//cout<<"before melding"<<endl;
+	//debug(root);
+
+	//for(int i = 0;i<6;i++) if( heapArray[i] ) cout<<"i= "<<i <<" " <<heapArray[i]->data << " "<< heapArray[i]->distance<< "| ";
+	//cout<<endl;
 
 	if(rootChild !=NULL && root != rootChild)	root->child = meld(rootChild,root->child); //meld the new root and old root's child
 
-	cout<<"after melding"<<endl;
-	debug(root);
+	//cout<<"after melding"<<endl;
+	//debug(root);
 
 
 	//do pairwise combine
 	node *storedRoot = root; //store root pointer temporarily.
-	cout<<"before doing pairwise combine " <<endl;
-	debug(root);
+	//cout<<"before doing pairwise combine " <<endl;
+	//debug(root);
 	int cnt = 0;
 	while(1)
 	{
@@ -197,7 +203,7 @@ node * removeMin(node * &root,int k) //delete the min node and return it
 				int tempDegree = root->degree;
 			//	cout<<"pairwise combining: "<<root->data<<" " <<treeTable[root->degree]->data<<endl;
 				root = pairwiseCombine(root, treeTable[root->degree]);
-				debug(root);
+				//debug(root);
 				treeTable[tempDegree] = NULL;
 			}
 		}
@@ -215,10 +221,10 @@ node * removeMin(node * &root,int k) //delete the min node and return it
 
 	//cout<<"Bheap after pairwise combine " <<endl;
 	//printBinomialHeap(root);
-	cout<<"after doing pariwise combine " <<endl;
-	debug(root);
-	for(int i = 0;i<4;i++) if( heapArray[i] ) cout<<"i= "<<i <<" " <<heapArray[i]->data << " "<< heapArray[i]->distance<< "| ";
-	cout<<endl;
+	//cout<<"after doing pariwise combine " <<endl;
+	//debug(root);
+	//for(int i = 0;i<4;i++) if( heapArray[i] ) cout<<"i= "<<i <<" " <<heapArray[i]->data << " "<< heapArray[i]->distance<< "| ";
+	//cout<<endl;
 
 
 	//now fix the root pointer to point to node with min data
@@ -227,7 +233,7 @@ node * removeMin(node * &root,int k) //delete the min node and return it
 	int counter = 0 ;
 	while(root && root->sibling != storedRoot)
 	{
-		cout<<"inside while loop" ;
+		//cout<<"inside while loop" ;
 		root=root->sibling;
 		if(root->distance < potentialRoot->distance) potentialRoot = root;
 		++counter; 
@@ -236,8 +242,8 @@ node * removeMin(node * &root,int k) //delete the min node and return it
 	root=potentialRoot;
 	if(root)  root->parent = NULL; //TODO: hack remove it later
 	//cout<<"new root's data"<< root->data<<endl<< "new root's child "<<root->child->data<<endl<<" new roots' sibling"<<root->sibling->data <<endl;
-	for(int i = 0;i<4;i++) if( heapArray[i] ) cout<<"i= "<<i <<" " <<heapArray[i]->data << " "<< heapArray[i]->distance<< "| ";
-	cout<<endl;
+	//for(int i = 0;i<4;i++) if( heapArray[i] ) cout<<"i= "<<i <<" " <<heapArray[i]->data << " "<< heapArray[i]->distance<< "| ";
+	//cout<<endl;
 
 	return toReturn;
 }
@@ -246,14 +252,14 @@ void decreaseKey(node * &root, node * &t, int newValue )  // t being pointer to 
 {
 	//if(t->data == 0 ) return;
 	if(t == NULL) return; 
-	if(root ) cout<<endl<<"root->data "<<root->data; if(t) cout<< "|t->data " << t->data<<endl;
+	//if(root ) cout<<endl<<"root->data "<<root->data; if(t) cout<< "|t->data " << t->data<<endl;
 	t->distance = newValue;
-	if(t->parent !=NULL) cout<<"deckey n"<<endl;
+	//if(t->parent !=NULL) cout<<"deckey n"<<endl;
 	int count = 0 ;
 	//swap node with its parent if it violates  min heap property
 	while( (t->parent != NULL) && (t->distance < t->parent->distance))
 	{
-		cout<<"count: "<<count<<endl;
+		//cout<<"count: "<<count<<endl;
 		++count;
 		node *t1 = t->child;
 		node *t2 = NULL;
@@ -268,7 +274,8 @@ void decreaseKey(node * &root, node * &t, int newValue )  // t being pointer to 
 		node *t4 = p1->child;
 		int cntx = 0; 
 		while(tx && tx->sibling != p1){ tx = tx->sibling; ++cntx; if(cntx >10){cout<<"fell into infinite loop" ;  break;} } 
-		while(px->sibling !=p) px = px->sibling;
+		cntx = 0;
+		while(px->sibling !=p) {px = px->sibling;if(cntx >10){cout<<"fell into infinite loop" ;  break;} }
 		if(p) t3 = p->parent;
 
 		t->child = p;
@@ -298,8 +305,70 @@ void decreaseKey(node * &root, node * &t, int newValue )  // t being pointer to 
 	//fix the root pointer if needed
 	if(root && t->parent == NULL && t->distance < root->distance)    
 		root = t;
-	cout<<"inside decrease key function: "<<endl;
-	debug(root);
+	//cout<<"inside decrease key function: "<<endl;
+	//debug(root);
 	//printBinomialHeap(root);
 }
 
+void dijkstraBinomialHeap(graph *g,int sourceVertex)
+{
+	intializeSingleSource(g,sourceVertex);
+	bool visited[g->nVertices];
+
+	for(int i =0;i<g->nVertices;i++) { d[i] = INF; visited[i] = false;} //intial estimate of source to all other vertices and no vertices have been visited yet.
+
+	d[sourceVertex] = 0; //distance of source vertex to source vertex is zero
+	
+	node * root = NULL;
+//	node * heapArray[g->nVertices];
+	//heapArray[0]  = binomialHeapInsert(root,sourceVertex,d[sourceVertex]);
+	for(int i = 0;i<g->nVertices;i++) heapArray[i] = binomialHeapInsert(root,i,d[i]);
+	//cout<< "nVertices is " << g->nVertices<<" "<<endl;
+	//cout<<"1st root->data : "<<root->data<<endl;
+	//printBinomialHeap(root) ;
+	//cout<<endl;
+	
+	for(int k =0;k<g->nVertices;k++)
+	{
+		//cout<<endl<<endl<<endl<< "binomialHeap when k = " << k<< endl ; 
+		//for(int i = 0;i<g->nVertices;i++) if( heapArray[i] ) cout<<"i= "<<i <<" " <<heapArray[i]->data << " "<< heapArray[i]->distance<< "| ";
+		//cout<<endl;
+		//printBinomialHeap(root) ;
+		node * min = removeMin(root,k);
+		if(min == NULL) break; //nothing in heap, break out .
+		//cout<<"for loop  "<<endl; 
+		int minIndex = min->data;		
+		//cout<<"minIndex is "<<minIndex<<endl    ; //<<"| min->distance is "<<min->distance<< " "<< "min->child->data "<< min->child->data<< endl ;
+		heapArray[minIndex] = NULL; //set the pointer to NULL as it has been removed from heap
+		struct edgeNode *e = g->edges[minIndex] , *temp;temp = e;
+		//if(e==NULL) cout<<" ya";		
+		//cout<<endl<<"before decrease key: bheap after k=" <<k <<endl;
+		//cout<< e->endPoint << " "<< e->weight<< endl;
+		//debug(root); 
+		//printBinomialHeap(root);
+		while(e != NULL)
+		{
+		//	cout<< "here " ;
+			int u = minIndex, v = e->endPoint, w = e->weight;
+	
+		//	cout << "u is: " << u<< " v is : "<<v<<"w is : " << w;
+		//	if(heapArray[v]) cout<<"| heapArray[v]:data:" << heapArray[v]->data<<endl;	
+			if(d[v] > d[u] + w) 
+			{
+				d[v] = d[u] + w;
+				decreaseKey(root, heapArray[v], d[v]);
+			}
+			e=e->next;
+		}
+		visited[minIndex] = true;
+
+		//cout<<endl<<endl<<"distance array is: ";
+		//for(int j =0;j<g->nVertices;j++) cout<<  d[j]<<" ";
+
+		//cout<<endl<<"bheap after k=" <<k <<endl;
+		//debug(root);
+		//printBinomialHeap(root);
+	}
+	for(int j =0;j<g->nVertices;j++) cout<<  d[j]<<" ";
+	cout<<endl;
+}
