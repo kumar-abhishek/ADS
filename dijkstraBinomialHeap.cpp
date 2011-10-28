@@ -31,6 +31,7 @@ void initializeGraph(graph *g)
 
 void insertEdge(graph *g, int x, int y, int cost)
 {
+	if(g == NULL) { cout<<endl<< "graph is NULL" <<endl;return;}
 	edgeNode *p; /* temporary pointer */
 	p = new edgeNode;
 	p->weight = cost;
@@ -87,8 +88,8 @@ void dijkstraBinomialHeap(graph *g,int sourceVertex)
 	
 	node * root = NULL;
 //	node * heapArray[g->nVertices];
-	heapArray[0]  = binomialHeapInsert(root,sourceVertex,d[sourceVertex]);
-	for(int i = 1;i<g->nVertices;i++) heapArray[i] = binomialHeapInsert(root,i,d[i]);
+	//heapArray[0]  = binomialHeapInsert(root,sourceVertex,d[sourceVertex]);
+	for(int i = 0;i<g->nVertices;i++) heapArray[i] = binomialHeapInsert(root,i,d[i]);
 	cout<< "nVertices is " << g->nVertices<<" "<<endl;
 	cout<<"1st root->data : "<<root->data<<endl;
 	//printBinomialHeap(root) ;
@@ -151,7 +152,7 @@ int main()
 	printGraph(g);
 	cout<<endl;
 	int sourceVertex = 0;
-	dijkstraBinomialHeap(g,sourceVertex);
-//	for(int sourceVertex = 0;sourceVertex < g->nVertices;sourceVertex++) 	DIJKSTRA(g,sourceVertex);
+//	dijkstraBinomialHeap(g,sourceVertex);
+	for(int sourceVertex = 0;sourceVertex < g->nVertices;sourceVertex++) dijkstraBinomialHeap(g,sourceVertex);
 }
 

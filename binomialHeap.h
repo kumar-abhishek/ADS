@@ -245,6 +245,7 @@ node * removeMin(node * &root,int k) //delete the min node and return it
 void decreaseKey(node * &root, node * &t, int newValue )  // t being pointer to the the node whose decrease key is to be performed.
 {
 	//if(t->data == 0 ) return;
+	if(t == NULL) return; 
 	if(root ) cout<<endl<<"root->data "<<root->data; if(t) cout<< "|t->data " << t->data<<endl;
 	t->distance = newValue;
 	if(t->parent !=NULL) cout<<"deckey n"<<endl;
@@ -264,13 +265,16 @@ void decreaseKey(node * &root, node * &t, int newValue )  // t being pointer to 
 		node *p2 = p->sibling;
 		node *px = p->sibling;
 		node *tx = t2;
-		while(tx && tx->sibling != p1) tx = tx->sibling;
+		node *t4 = p1->child;
+		int cntx = 0; 
+		while(tx && tx->sibling != p1){ tx = tx->sibling; ++cntx; if(cntx >10){cout<<"fell into infinite loop" ;  break;} } 
 		while(px->sibling !=p) px = px->sibling;
 		if(p) t3 = p->parent;
 
 		t->child = p;
 	 	p->parent =t;
 		p->child = t1;
+		if(t4 && t4 != t->child && p1 != t) { p->child = t4; t4->parent = p;} //lastest addition
 		if(t2) p->sibling = t2;
 		else p->sibling = p;
 		if(p1 != t) p1->sibling = p; 
@@ -281,7 +285,7 @@ void decreaseKey(node * &root, node * &t, int newValue )  // t being pointer to 
 		//p2->sibling = t;
 		if(px != p) px->sibling = t;
 		if(t1) t1->parent = p;
-		if(tx) tx->sibling = p;
+		if(tx && tx != t) tx->sibling = p;
 /*	
 		node *q = p; //we have to come back to p
 		while(q->sibling != p)
@@ -292,7 +296,7 @@ void decreaseKey(node * &root, node * &t, int newValue )  // t being pointer to 
 */
 	}
 	//fix the root pointer if needed
-	if(t->parent == NULL && t->distance < root->distance)    
+	if(root && t->parent == NULL && t->distance < root->distance)    
 		root = t;
 	cout<<"inside decrease key function: "<<endl;
 	debug(root);
