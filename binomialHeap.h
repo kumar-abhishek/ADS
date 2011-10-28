@@ -102,7 +102,7 @@ node * pairwiseCombine(node * &root1, node * &root2)
 		++(root->degree);
 	}
 	cout<<"bheap inside pairwise Combine"<<endl;
-	printBinomialHeap(root);
+	//printBinomialHeap(root);
 	cout<<"root->degree:  " << root->degree<<endl;
 	return root;
 }
@@ -117,6 +117,7 @@ void debug(node * root)
 	if(root && root->child && root->child->sibling) cout<< "new root's child->sibling->data: " <<root->child->sibling->data<<"|root->child->sibling->distance: " << root->child->sibling->distance<<endl;
 	if(root && root->sibling && root->sibling->child) cout<< "new root's sibling->child->data: " <<root->sibling->child->data<<"|root->sibling->child->distance: " << root->sibling->child->distance<<endl;
 	if(root && root->child && root->child->child) cout<<"new root->child->child data : "<<root->child->child->data<<"|root->child->child->distance: " << root->child->child->distance<<endl;
+	if(root && root->child && root->child->sibling && root->child->sibling->sibling) cout<< "new root's child->sibling->sibling->data: " <<root->child->sibling->sibling->data<<"|root->child->sibling->sibling->distance: " << root->child->sibling->sibling->distance<<endl;
 
 }
 
@@ -170,7 +171,7 @@ node * removeMin(node * &root,int k) //delete the min node and return it
 
 	cout<<"before melding"<<endl;
 	debug(root);
-	for(int i = 0;i<4;i++) if( heapArray[i] ) cout<<"i= "<<i <<" " <<heapArray[i]->data << " "<< heapArray[i]->distance<< "| ";
+	for(int i = 0;i<6;i++) if( heapArray[i] ) cout<<"i= "<<i <<" " <<heapArray[i]->data << " "<< heapArray[i]->distance<< "| ";
 	cout<<endl;
 
 	if(rootChild !=NULL && root != rootChild)	root->child = meld(rootChild,root->child); //meld the new root and old root's child
@@ -243,7 +244,7 @@ node * removeMin(node * &root,int k) //delete the min node and return it
 
 void decreaseKey(node * &root, node * &t, int newValue )  // t being pointer to the the node whose decrease key is to be performed.
 {
-	if(t->data == 0 ) return;
+	//if(t->data == 0 ) return;
 	if(root ) cout<<endl<<"root->data "<<root->data; if(t) cout<< "|t->data " << t->data<<endl;
 	t->distance = newValue;
 	if(t->parent !=NULL) cout<<"deckey n"<<endl;
@@ -272,6 +273,7 @@ void decreaseKey(node * &root, node * &t, int newValue )  // t being pointer to 
 		if(t) t->parent = t3;
 		if(t3) t3->child = t;
 		p2->sibling = t;
+		if(t1) t1->parent = p;
 
 /*	
 		node *q = p; //we have to come back to p
