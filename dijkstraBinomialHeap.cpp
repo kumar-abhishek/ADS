@@ -91,7 +91,7 @@ void dijkstraBinomialHeap(graph *g,int sourceVertex)
 	for(int i = 1;i<g->nVertices;i++) heapArray[i] = binomialHeapInsert(root,i,d[i]);
 	cout<< "nVertices is " << g->nVertices<<" "<<endl;
 	cout<<"1st root->data : "<<root->data<<endl;
-	printBinomialHeap(root) ;
+	//printBinomialHeap(root) ;
 	cout<<endl;
 	
 	for(int k =0;k<g->nVertices;k++)
@@ -99,7 +99,7 @@ void dijkstraBinomialHeap(graph *g,int sourceVertex)
 		cout<<endl<<endl<<endl<< "binomialHeap when k = " << k<< endl ; 
 		for(int i = 0;i<g->nVertices;i++) if( heapArray[i] ) cout<<"i= "<<i <<" " <<heapArray[i]->data << " "<< heapArray[i]->distance<< "| ";
 		cout<<endl;
-		printBinomialHeap(root) ;
+		//printBinomialHeap(root) ;
 		node * min = removeMin(root,k);
 		if(min == NULL) break; //nothing in heap, break out .
 		cout<<"for loop  "<<endl; 
@@ -111,7 +111,7 @@ void dijkstraBinomialHeap(graph *g,int sourceVertex)
 		cout<<endl<<"before decrease key: bheap after k=" <<k <<endl;
 		//cout<< e->endPoint << " "<< e->weight<< endl;
 		debug(root); 
-		printBinomialHeap(root);
+		//printBinomialHeap(root);
 		while(e != NULL)
 		{
 			cout<< "here " ;
@@ -133,7 +133,7 @@ void dijkstraBinomialHeap(graph *g,int sourceVertex)
 
 		cout<<endl<<"bheap after k=" <<k <<endl;
 		debug(root);
-		printBinomialHeap(root);
+		//printBinomialHeap(root);
 	}
 //	cout<<endl<<"distance array is:  ";
 //	for(int j =0;j<g->nVertices;j++) cout<<  d[j]<<" ";

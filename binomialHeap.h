@@ -138,7 +138,7 @@ node * removeMin(node * &root,int k) //delete the min node and return it
 
 	cout<<"before copying"<<endl;
 	debug(root);
-	printBinomialHeap(root);
+	//printBinomialHeap(root);
 /*
 	if(toCopy !=NULL && toCopy != root)
 	{
@@ -207,14 +207,14 @@ node * removeMin(node * &root,int k) //delete the min node and return it
 			root = root->sibling;
 		}
 //		cout<<endl;
-		printBinomialHeap(root);
+		//printBinomialHeap(root);
 //		cout<<endl;
 //		++cnt;
 //		if(cnt > 5) break;
 	}
 
 	//cout<<"Bheap after pairwise combine " <<endl;
-	printBinomialHeap(root);
+	//printBinomialHeap(root);
 	cout<<"after doing pariwise combine " <<endl;
 	debug(root);
 	for(int i = 0;i<4;i++) if( heapArray[i] ) cout<<"i= "<<i <<" " <<heapArray[i]->data << " "<< heapArray[i]->distance<< "| ";
@@ -262,6 +262,10 @@ void decreaseKey(node * &root, node * &t, int newValue )  // t being pointer to 
 		node *p = t->parent;
 		node *p1 = p->child;
 		node *p2 = p->sibling;
+		node *px = p->sibling;
+		node *tx = t2;
+		while(tx && tx->sibling != p1) tx = tx->sibling;
+		while(px->sibling !=p) px = px->sibling;
 		if(p) t3 = p->parent;
 
 		t->child = p;
@@ -269,12 +273,15 @@ void decreaseKey(node * &root, node * &t, int newValue )  // t being pointer to 
 		p->child = t1;
 		if(t2) p->sibling = t2;
 		else p->sibling = p;
-		t->sibling = p2;
+		if(p1 != t) p1->sibling = p; 
+		if(p2 != p) t->sibling = p2;//only if p2!=p
+		else t->sibling = t;
 		if(t) t->parent = t3;
 		if(t3) t3->child = t;
-		p2->sibling = t;
+		//p2->sibling = t;
+		if(px != p) px->sibling = t;
 		if(t1) t1->parent = p;
-
+		if(tx) tx->sibling = p;
 /*	
 		node *q = p; //we have to come back to p
 		while(q->sibling != p)
@@ -289,6 +296,6 @@ void decreaseKey(node * &root, node * &t, int newValue )  // t being pointer to 
 		root = t;
 	cout<<"inside decrease key function: "<<endl;
 	debug(root);
-	printBinomialHeap(root);
+	//printBinomialHeap(root);
 }
 
