@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
 		int vnum = 0, density = 0, nedges = 0;
 
 		if(argv[2]) vnum = atoi(argv[2]);//get number of vertices
-		if(vnum == 0 ) vnum = 100; //user didnt specify the number of vertices
+		if(vnum == 0 ) vnum = 15; //user didnt specify the number of vertices
 		
 		if(argv[3]) density = atoi(argv[3]);//get density of graph
 		if(density == 0 ) density = 50; //user didnt specify density, so assume 50%
