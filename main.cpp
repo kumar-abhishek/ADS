@@ -25,10 +25,10 @@ int main(int argc, char *argv[])
 		int vnum = 0, density = 0, nedges = 0;
 
 		if(argv[2]) vnum = atoi(argv[2]);//get number of vertices
-		if(vnum == 0 ) vnum = 15; //user didnt specify the number of vertices
+		if(vnum == 0 ) vnum = 500; //user didnt specify the number of vertices
 		
 		if(argv[3]) density = atoi(argv[3]);//get density of graph
-		if(density == 0 ) density = 50; //user didnt specify density, so assume 50%
+		if(density == 0 ) density = 100; //user didnt specify density, so assume 50%
 		
 		nedges = (density*(vnum)*(vnum-1))/100 + 1;   // calculate number of edges needed to generate for the specified density		
 
@@ -49,12 +49,16 @@ int main(int argc, char *argv[])
 
 		if(g->nVertices !=0 ) ++(g->nVertices) ; //update to be equal to say that this is number of vertices in graph. 
 
-		printGraph(g);
+//		printGraph(g);
 //		cout<<endl<<vnum<< " " << density<< " " << nedges<<endl;
 
 		//create graph using above input and call dijkstra.
 		//for(int sourceVertex = 0;sourceVertex < g->nVertices;sourceVertex++) 	dijkstraSimpleScheme(g,sourceVertex);
+		clock_t Start, Time;
+		Start  = clock();
 		for(int sourceVertex = 0;sourceVertex < g->nVertices;sourceVertex++) 	dijkstraBinomialHeap(g,sourceVertex);
+		Time = clock() - Start;
+		cout << endl<<Time;
 
 	}
 

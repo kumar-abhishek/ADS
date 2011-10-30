@@ -1,4 +1,5 @@
 #include<iostream>
+#include<sstream>
 #include<queue>
 using namespace std;
 
@@ -53,6 +54,8 @@ void printBinnoomialHeap(node *root,int nVertices)
 	cout<<endl;
 }
 
+
+
 node * meld(node * &root1,node * &root2)
 {
 //	cout<<endl<<"Inside meld()" <<endl;
@@ -66,6 +69,7 @@ node * meld(node * &root1,node * &root2)
 	if(root1->data < root2->data) return root1;
 	else return root2;
 }
+
 
 void debug(node * root)
 {
@@ -102,7 +106,17 @@ node * pairwiseCombine(node * &root1, node * &root2)
 		node *temp = t;
 		if(temp)
 		{
-			while(temp->sibling != t)	temp = temp->sibling;//reach the last node in cicular linked list
+			int cc=0;
+			while(temp->sibling != t)
+			{
+				temp = temp->sibling;//reach the last node in cicular linked list
+				++cc;
+				if(cc>10) 
+				{
+					//cout<<endl<<endl<<"!!!!! INFINITE LOOP !!!!!" << __LINE__;
+					break;
+				}
+			}
 			temp->sibling = root;
 		}
 		//fix the case when sibRoot's sibling points to root
@@ -130,9 +144,19 @@ node * pairwiseCombine(node * &root1, node * &root2)
 
 			//fix circular link list pointer
 			node *temp = t;
+			int cc=0;
 			if(temp)
 			{
-				while(temp->sibling != t)	temp = temp->sibling;//reach the last node in cicular linked list
+				while(temp->sibling != t)
+				{
+					temp = temp->sibling;//reach the last node in cicular linked list
+					++cc;
+					if(cc>10) 
+					{
+						//cout<<endl<<endl<<"!!!!! INFINITE LOOP !!!!!" << __LINE__;
+						break;
+					}
+				}
 				temp->sibling = sibRoot;
 			}
 			sibRoot->sibling = t;
@@ -142,46 +166,34 @@ node * pairwiseCombine(node * &root1, node * &root2)
 		root->sibling = sSibRoot;
 		++(root->degree);
 	}
-	cout<<"bheap inside pairwise Combine"<<endl;
-	debug(root);
+	//cout<<"bheap inside pairwise Combine"<<endl;
+	//debug(root);
 	////printBinnoomialHeap(root,nVertices);
-	cout<<"root->degree:  " << root->degree<<endl;
+	//cout<<"root->degree:  " << root->degree<<endl;
 	return root;
 }
 node * removeMin(node * &root,int k) //delete the min node and return it
 {
 	if(root ==NULL) return NULL;
-	cout<<endl<<endl<<"removeMin root:" << root->data <<"| removeMin distance:  " <<root->distance <<endl <<" root->sibling->data: " << root->sibling->data<<endl ;
+	//cout<<endl<<endl<<"removeMin root:" << root->data <<"| removeMin distance:  " <<root->distance <<endl <<" root->sibling->data: " << root->sibling->data<<endl ;
 	node * treeTable[MAXDEGREE];
 	for(int i=0;i<MAXDEGREE;i++) treeTable[i] = NULL;
 
 	node * toReturn = new node; toReturn->data =root->data; toReturn->distance = root->distance;
 	node *rootChild = root->child;
-	if(rootChild)cout<<endl<<"rootChild->data: "<< root->child->data<<endl;
-	cout<<"before return"<< toReturn<<endl;
+	if(rootChild)
+	{ 
+		//cout<<endl<<"rootChild->data: "<< root->child->data<<endl;
+	}
+	//cout<<"before return"<< toReturn<<endl;
 
-	cout<< " xx: ";
+	//cout<< " xx: ";
 	node * toCopy = root->sibling;
 
-	cout<<"before copying"<<endl;
-	debug(root);
+	//cout<<"before copying"<<endl;
+	//debug(root);
 	////printBinnoomialHeap(root,nVertices);
-/*
-	if(toCopy !=NULL && toCopy != root)
-	{
-		root->data = toCopy->data; root->degree = toCopy->degree; root->child = toCopy->child; root->sibling = toCopy->sibling; //copy next node to root node
-		root->distance = toCopy->distance;
-		delete(toCopy);//delete next node
-	}
-	for(int i = 0;i<4;i++) if( heapArray[i] ) cout<<"i= "<<i <<" " <<heapArray[i]->data << " "<< heapArray[i]->distance<< "| ";
-	cout<<endl;
 
-	if(toCopy == root) 
-	{
-		delete(root);
-		root = rootChild;		
-	}
-*/
 	if(root->sibling == root)
 	{
 		delete(root);
@@ -190,36 +202,60 @@ node * removeMin(node * &root,int k) //delete the min node and return it
 	else
 	{
 		node  * sibRoot = root->sibling , *tt = root;
-		while(tt->sibling != root) {tt = tt->sibling;}
+		int cc=0;
+		while(tt->sibling != root)
+		{
+			tt = tt->sibling;
+			++cc;
+			if(cc>10) 
+			{
+				//cout<<endl<<endl<<"!!!!! INFINITE LOOP !!!!!" << __LINE__;
+				break;
+			}
+		}
+
+
+
+
+
 		tt->sibling = sibRoot;
 		//	delete(root);
 		root = sibRoot;
 	}
 
-	cout<<"before melding"<<endl;
-	debug(root);
-	////printBinnoomialHeap(root,nVertices);
+	//cout<<"before melding"<<endl;
+	//debug(root); ////printBinnoomialHeap(root,nVertices);
 
-	for(int i = 0;i<6;i++) if( heapArray[i] ) cout<<"i= "<<i <<" " <<heapArray[i]->data << " "<< heapArray[i]->distance<< "| ";
-	cout<<endl;
+	for(int i = 0;i<6;i++) if( heapArray[i] )
+	{
+		//cout<<"i= "<<i <<" " <<heapArray[i]->data << " "<< heapArray[i]->distance<< "| ";
+	}
 
-//	if(rootChild !=NULL && root != rootChild)	root->child = meld(rootChild,root->child); //meld the new root and old root's child
+	if(rootChild !=NULL && root != rootChild)
+	{
+		//root->child = meld(rootChild,root->child); //meld the new root and old root's child
+	}
 	if(rootChild !=NULL && root != rootChild)	root = meld(rootChild,root); //meld the new root and old root's child
 
-	cout<<"after melding"<<endl;
-	debug(root);
+	//cout<<"after melding"<<endl;
+	//debug(root);
 	////printBinnoomialHeap(root,nVertices);
 
 
 	//do pairwise combine
 	node *storedRoot = root; //store root pointer temporarily.
-	cout<<"before doing pairwise combine " <<endl;
-	debug(root);
+	//cout<<"before doing pairwise combine " <<endl;
+	//debug(root);
 	int cnt = 0;
 	while(1)
 	{
-		cout<<endl<<endl<<"count: " << cnt<<endl<<endl;
+		//cout<<endl<<endl<<"count: " << cnt<<endl<<endl;
 		if(root == NULL) break;
+		if(root->degree > MAXDEGREE || root->degree < 0) 
+		{
+			//cout<<endl<<endl<<"!!!!!         INVALID DEGREE !!!!!!!!"<<endl<<endl;
+			break;
+		}
 		if( treeTable[root->degree] != NULL)
 		{
 			if(treeTable[root->degree] == root) 
@@ -227,13 +263,29 @@ node * removeMin(node * &root,int k) //delete the min node and return it
 			else
 			{
 				int tempDegree = root->degree;
-				cout<<"pairwise combining: "<<root->data<<" " <<treeTable[root->degree]->data<<endl;
+				//cout<<"pairwise combining: "<<root->data<<" " <<treeTable[root->degree]->data<<endl;
 				node * x= root->sibling;
-				while(x->sibling != root) x=  x->sibling;
-				if(x->child) cout<<"root->prev->child:  "<< x->child->data<<endl;
-				else{ cout<<"root->prev->child is NULL"<<endl;}
+				int cc=0;
+				while(x->sibling != root)
+				{
+					x=  x->sibling;
+					++cc; 
+					if(cc>10)
+					{
+						//cout<<endl<<endl<<"!!!!!!! INF LOOP!!!!!!!" <<endl<<endl; 
+						break;
+					}
+				}
+				if(x->child)
+				{
+					//cout<<"root->prev->child:  "<< x->child->data<<endl;
+				}
+				else
+				{
+					//cout<<"root->prev->child is NULL"<<endl;
+				}
 				root = pairwiseCombine(root, treeTable[root->degree]);
-				debug(root);
+				//debug(root);
 				treeTable[tempDegree] = NULL;
 			}
 		}
@@ -242,26 +294,42 @@ node * removeMin(node * &root,int k) //delete the min node and return it
 			treeTable[root->degree] = root;
 			root = root->sibling;
 			node * x= root->sibling;
-			while(x->sibling != root) x=  x->sibling;
-			if(x->child) cout<<"root->prev->child:  "<< x->child->data<<endl;
-			else{ cout<<"root->prev->child is NULL"<<endl;}
+			int cc = 0;
+			while(x->sibling != root)
+			{
+				x=  x->sibling;
+				++cc; 
+				if(cc>10)
+				{
+					//cout<<endl<<endl<<"!!!!!!! INF LOOP!!!!!!!" <<endl<<endl; 
+					break;
+				}
+			}
+			if(x->child)
+			{
+				//cout<<"root->prev->child:  "<< x->child->data<<endl;
+			}
+			else
+			{
+				//cout<<"root->prev->child is NULL"<<endl;
+			}
 
 		}
-		cout<<endl;
+		//cout<<endl;
 		//printBinnoomialHeap(root,nVertices);
-		cout<<endl;
-		debug(root);
+		//cout<<endl;
+		//debug(root);
 		++cnt;
-//		if(cnt > 5) break;
+		//	if(cnt > 5) break;
 	}
 
-	cout<<"Bheap after pairwise combine " <<endl;
+	//cout<<"Bheap after pairwise combine " <<endl;
 	////printBinnoomialHeap(root,nVertices);
-	cout<<"after doing pariwise combine " <<endl;
-	debug(root);
+	//cout<<"after doing pariwise combine " <<endl;
+	//debug(root);
 	////printBinnoomialHeap(root,nVertices);
-	for(int i = 0;i<4;i++) if( heapArray[i] ) cout<<"i= "<<i <<" " <<heapArray[i]->data << " "<< heapArray[i]->distance<< "| ";
-	cout<<endl;
+//	for(int i = 0;i<4;i++) if( heapArray[i] ) cout<<"i= "<<i <<" " <<heapArray[i]->data << " "<< heapArray[i]->distance<< "| ";
+//	cout<<endl;
 
 
 	//now fix the root pointer to point to node with min data
@@ -270,17 +338,21 @@ node * removeMin(node * &root,int k) //delete the min node and return it
 	int counter = 0 ;
 	while(root && root->sibling != storedRoot)
 	{
-		cout<<"inside while loop" ;
+//		cout<<"inside while loop" ;
 		root=root->sibling;
 		if(root->distance < potentialRoot->distance) potentialRoot = root;
 		++counter; 
-		if(counter>5){cout<<endl<<endl<<"!!!!!!        infinite loop       !!!!!!!!!"; break;}
+		if(counter>10)
+		{
+			//cout<<endl<<endl<<"!!!!!!        infinite loop       !!!!!!!!!";
+			break;
+		}
 	}
 	root=potentialRoot;
 	if(root)  root->parent = NULL; //TODO: hack remove it later
 //	cout<<"new root's data"<< root->data<<endl<< "new root's child "<<root->child->data<<endl<<" new roots' sibling"<<root->sibling->data <<endl;
-	for(int i = 0;i<4;i++) if( heapArray[i] ) cout<<"i= "<<i <<" " <<heapArray[i]->data << " "<< heapArray[i]->distance<< "| ";
-	cout<<endl;
+//	for(int i = 0;i<4;i++) if( heapArray[i] ) cout<<"i= "<<i <<" " <<heapArray[i]->data << " "<< heapArray[i]->distance<< "| ";
+//	cout<<endl;
 
 	return toReturn;
 }
@@ -289,18 +361,24 @@ void decreaseKey(node * &root, node * &t, int newValue )  // t being pointer to 
 {
 	//if(t->data == 0 ) return;
 	if(t == NULL) return; 
-	if(root ) cout<<endl<<"root->data "<<root->data; if(t) cout<< "|t->data " << t->data<<endl;
+//	if(root ) cout<<endl<<"root->data "<<root->data; if(t) cout<< "|t->data " << t->data<<endl;
 	t->distance = newValue;
-	if(t->parent !=NULL) cout<<"deckey n"<<endl;
+//	if(t->parent !=NULL) cout<<"deckey n"<<endl;
+
 	int count = 0 ;
 
 	//swap node with its parent if it violates  min heap property
 	while( (t->parent != NULL) && (t->distance < t->parent->distance))
 	{
-		cout<<"decreaseKey count: "<<count<<endl;
+//		cout<<"decreaseKey count: "<<count<<endl;
 		++count;
-/*
-		node *t1 = t->child;
+		if(count > nVertices)
+		{
+			//cout<<"!!! ERROR !!!" <<endl;
+			return;
+		}
+		/*
+		   node *t1 = t->child;
 		node *t2 = NULL;
 		if(t->sibling != t) t2 = t->sibling;
 		node *t3 = NULL;
@@ -346,13 +424,31 @@ void decreaseKey(node * &root, node * &t, int newValue )  // t being pointer to 
 		node *cx = NULL;
 		if(c) cx = c->sibling;
 
+		//swap degrees of parent and child
+		int tDegree = p->degree;
+		p->degree = t->degree;
+		t->degree = tDegree;
+
+
+
 		int cc=0;//TODO:remove this variable
 
 		//case 1 & 2 
 		if((p->sibling ==p) && (t1==t))
 		{
-			cout<<endl<<"case 1 & 2" ;
-			while(txEnd->sibling !=t) txEnd = txEnd->sibling;
+//			cout<<endl<<"case 1 & 2" ;
+			while(txEnd->sibling !=t)
+			{
+				txEnd = txEnd->sibling;
+				++cc;
+				if(cc>10)
+
+				{
+					//cout<<endl<<endl<<"!!!!!!! INF LOOP!!!!!!!" <<endl<<endl; 
+					//break;
+					return;
+				}
+			}
 			p->parent = t;
 			t->child = p;
 			t->sibling = t;
@@ -361,10 +457,19 @@ void decreaseKey(node * &root, node * &t, int newValue )  // t being pointer to 
 		
 			p->child =c; 
 			if(c) c->parent = p;
+			cc=0;
 			while(c && cx!=c)
 			{
 				cx->parent = p;
 				cx = cx->sibling;
+				++cc;
+				if(cc>10)
+
+				{
+					//cout<<endl<<endl<<"!!!!!!! INF LOOP!!!!!!!" <<endl<<endl; 
+					//break;
+					return;
+				}
 			}
 			if(tx != t) 
 			{
@@ -374,23 +479,51 @@ void decreaseKey(node * &root, node * &t, int newValue )  // t being pointer to 
 			}
 			else 
 				p->sibling = p;
+			cc=0;
 			while(tx!=txEnd)
 			{
 				tx->parent = t;
 				tx=tx->sibling;
+				++cc;
+				if(cc>10)
+
+				{
+					//cout<<endl<<endl<<"!!!!!!! INF LOOP!!!!!!!" <<endl<<endl; 
+					//break;
+					return;
+				}
 			}
 		}
 
 		//case 3 & 4:
 		else if((p->sibling !=p) && (t==t1) )
 		{
-			cout<<endl<<"case 3 & 4" ;
+//			cout<<endl<<"case 3 & 4" ;
 			cc=0;
-			while(pxEnd->sibling !=p){ pxEnd = pxEnd->sibling;
-				++cc; if(cc>10){cout<<endl<<endl<<"!!!!!!! INF LOOP!!!!!!!" <<endl<<endl; break;} }
+			while(pxEnd->sibling !=p)
+			{ 
+				pxEnd = pxEnd->sibling;
+				++cc;
+				if(cc>10)
+				{
+					//cout<<endl<<endl<<"!!!!!!! INF LOOP!!!!!!!" <<endl<<endl; 
+					//break;
+					return;
+				}
+
+			}
 			cc=0;
-			while(txEnd->sibling !=t){ txEnd = txEnd->sibling;
-				++cc; if(cc>10){cout<<endl<<endl<<"!!!!!!! INF LOOP!!!!!!!" <<endl<<endl; break;}}
+			while(txEnd->sibling !=t)
+			{
+				txEnd = txEnd->sibling;
+				++cc; 
+				if(cc>10)
+				{
+					//cout<<endl<<endl<<"!!!!!!! INF LOOP!!!!!!!" <<endl<<endl; 
+					//break;
+					return;
+				}
+			}
 			p->parent = t;
 			t->child = p;
 			t->parent = gp;
@@ -400,10 +533,18 @@ void decreaseKey(node * &root, node * &t, int newValue )  // t being pointer to 
 			
 			p->child =c;
 			if(c) c->parent =p;
+			cc= 0 ;
 			while(c && cx!=c)
 			{
 				cx->parent = p;
 				cx=cx->sibling;
+				++cc; 
+				if(cc>10)
+				{
+					//cout<<endl<<endl<<"!!!!!!! INF LOOP!!!!!!!" <<endl<<endl; 
+					//break;
+					return;
+				}
 			}
 			pxEnd->sibling =t;
 			if(tx != t) 
@@ -419,7 +560,12 @@ void decreaseKey(node * &root, node * &t, int newValue )  // t being pointer to 
 			{
 				tx->parent = t;
 				tx= tx->sibling;
-				++cc; if(cc>10){cout<<endl<<endl<<"!!!!!!! INF LOOP!!!!!!!" <<endl<<endl; break;}
+				++cc;
+				if(cc>10){
+					//cout<<endl<<endl<<"!!!!!!! INF LOOP!!!!!!!" <<endl<<endl; 
+					//break;
+					return;
+				}
 			}
 			t->sibling = px;
 
@@ -427,14 +573,26 @@ void decreaseKey(node * &root, node * &t, int newValue )  // t being pointer to 
 
 
 		//case 5:
-		else if((t!=t1) && (p->sibling==p))
+		else if(t1 && (t!=t1) && (p->sibling==p))
 		{
-			cout<<endl<<"case 5" ;
+//			cout<<endl<<"case 5" ;
 			p->parent =t ;
 			t->child = t1;
 			t1->parent =t;
 			//t1->sibling = p;
-			while(t2->sibling !=t) t2 = t2->sibling;
+			cc=0;
+			while(t2->sibling !=t)
+			{
+				t2 = t2->sibling;
+				++cc;
+				if(cc>10)
+
+				{
+					//cout<<endl<<endl<<"!!!!!!! INF LOOP!!!!!!!" <<endl<<endl; 
+					return;
+					//break;
+				}
+			}
 			t2->sibling = p;	
 
 			p->sibling = tx;
@@ -443,10 +601,17 @@ void decreaseKey(node * &root, node * &t, int newValue )  // t being pointer to 
 
 			if(t1 !=tx)
 			{
+				cc = 0 ;
 				while(tx->sibling !=t1)
 				{
 					tx->parent = t;
 					tx= tx->sibling;
+					++cc;
+					if(cc>10)
+					{
+						//cout<<endl<<endl<<"!!!!!!! INF LOOP!!!!!!!" <<endl<<endl;
+						return;
+					}
 				}
 				tx->parent =t ;
 			}
@@ -456,36 +621,73 @@ void decreaseKey(node * &root, node * &t, int newValue )  // t being pointer to 
 			p->child =c;
 			if(c) c->parent =p;
 			t->sibling =t;
+			cc=0;
 			while(c && cx!=c)
 			{
 				cx->parent = p;
 				cx=cx->sibling;
+				++cc; if(cc>10)
+				{
+					//cout<<endl<<endl<<"!!!!!!! INF LOOP!!!!!!!" <<endl<<endl;
+					return;
+					// break;
+				}
 			}
 		}
 
 		//case 6:
-		else if((t!=t1) && (p->sibling!=p))
+		else if(t1 && (t!=t1) && (p->sibling!=p))
 		{
-			cout<<endl<<"case 6" ;
-			while(pxEnd->sibling !=p) pxEnd = pxEnd->sibling;
+//			cout<<endl<<"case 6" ;
+			cc=0;
+			while(pxEnd->sibling !=p){
+				pxEnd = pxEnd->sibling;
+				++cc;
+				if(cc>10)
+				{
+					//cout<<endl<<endl<<"!!!!!!! INF LOOP!!!!!!!" <<endl<<endl;
+					return; 
+					//break;
+				}
+			}
 			p->parent =t ;
 			t->child = t1;
 			t1->parent =t;
 
-//			t1->sibling = p;
-			while(t2->sibling !=t) t2 = t2->sibling;
+			//			t1->sibling = p;
+			cc=0;
+			while(t2->sibling !=t)
+			{
+				t2 = t2->sibling;
+				++cc; 
+				if(cc>10)
+				{
+					//cout<<endl<<endl<<"!!!!!!! INF LOOP!!!!!!!" <<endl<<endl; 
+					//break;
+					return;
+				}
+			}
 			t2->sibling = p;	
 		
 			p->sibling = tx;
 			t->parent = gp;
 			if(gp) gp->child = t;
 
+
 			if(t1 !=tx)
 			{
+				cc=0;
 				while(tx->sibling !=t1)
 				{
 					tx->parent = t;
 					tx= tx->sibling;
+					++cc; 
+					if(cc>10)
+					{
+						//cout<<endl<<endl<<"!!!!!!! INF LOOP!!!!!!!" <<endl<<endl; 
+						//break;
+						return;
+					}
 				}
 				tx->parent =t ;
 			}
@@ -498,33 +700,43 @@ void decreaseKey(node * &root, node * &t, int newValue )  // t being pointer to 
 			if(c) c->parent =p;
 			t->sibling =px;
 			pxEnd->sibling =t;
+			cc = 0;
 			while(c && cx!=c)
 			{
 				cx->parent = p;
 				cx=cx->sibling;
+				++cc; 
+				if(cc>10)
+				{
+					//cout<<endl<<endl<<"!!!!!!! INF LOOP!!!!!!!" <<endl<<endl; 
+					//break;
+					return;
+				}
 			}
 		}
 		else
 		{
 			//otherwise
-			cout<<endl<<endl<<"No cases in Decrease Key matched :!!!!   ERROR !!!!! " <<endl<<endl;
+			//			cout<<endl<<endl<<"No cases in Decrease Key matched :!!!!   ERROR !!!!! " <<endl<<endl;
+			//break;
+			return;
 		}
-		debug(root);
+		//debug(root);
 
 
 	}
 	//fix the root pointer if needed
 	if(root && t->parent == NULL && t->distance < root->distance)    
 	{
-		cout<<"fixing root pointer";
+//		cout<<"fixing root pointer";
 		root = t;
 	}
 	else
 	{
-		cout<<"didnt fix root pointer";
+//		cout<<"didnt fix root pointer";
 	}
-	cout<<"inside decrease key function: "<<endl;
-	debug(root);
+//	cout<<"inside decrease key function: "<<endl;
+	//debug(root);
 	////print BinnoomialHeap(root,nVertices);
 }
 
@@ -541,38 +753,45 @@ void dijkstraBinomialHeap(graph *g,int sourceVertex)
 	node * root = NULL;
 //	node * heapArray[g->nVertices];
 	//heapArray[0]  = binomialHeapInsert(root,sourceVertex,d[sourceVertex]);
+	nVertices = g->nVertices; //TODO: REMOVE THIS LINE LATER
 	for(int i = 0;i<g->nVertices;i++) heapArray[i] = binomialHeapInsert(root,i,d[i]);
-	cout<< "nVertices is " << g->nVertices<<" "<<endl;
-	cout<<"1st root->data : "<<root->data<<endl;
+//	cout<< "nVertices is " << g->nVertices<<" "<<endl;
+//	cout<<"1st root->data : "<<root->data<<endl;
 	////printBinnoomialHeap(root,nVertices) ;
-	debug(root);
-	cout<<endl;
+	//debug(root);
+//	cout<<endl;
 	
 	for(int k =0;k<g->nVertices;k++)
 	{
-		cout<<endl<<endl<<endl<< "binomialHeap when k = " << k<< endl ; 
-		for(int i = 0;i<g->nVertices;i++) if( heapArray[i] ) cout<<"i= "<<i <<" " <<heapArray[i]->data << " "<< heapArray[i]->distance<< "| ";
-		cout<<endl;
+//		cout<<endl<<endl<<endl<< "binomialHeap when k = " << k<< endl ; 
+		for(int i = 0;i<g->nVertices;i++) 
+			if( heapArray[i] ) 
+			{
+				//cout<<"i= "<<i <<" " <<heapArray[i]->data << " "<< heapArray[i]->distance<< "| ";
+			}
+		//		cout<<endl;
 		////printBinnoomialHeap(root,nVertices) ;
 		node * min = removeMin(root,k);
 		if(min == NULL) break; //nothing in heap, break out .
-		cout<<"for loop  "<<endl; 
+//		cout<<"for loop  "<<endl; 
 		int minIndex = min->data;		
-		cout<<"minIndex is "<<minIndex<<endl    ; //<<"| min->distance is "<<min->distance<< " "<< "min->child->data "<< min->child->data<< endl ;
+//		cout<<"minIndex is "<<minIndex<<endl    ; //<<"| min->distance is "<<min->distance<< " "<< "min->child->data "<< min->child->data<< endl ;
 		heapArray[minIndex] = NULL; //set the pointer to NULL as it has been removed from heap
 		struct edgeNode *e = g->edges[minIndex] , *temp;temp = e;
-		if(e==NULL) cout<<" ya";		
-		cout<<endl<<"before decrease key: bheap after k=" <<k <<endl;
+//		cout<<endl<<"before decrease key: bheap after k=" <<k <<endl;
 		//cout<< e->endPoint << " "<< e->weight<< endl;
-		debug(root); 
+		//debug(root); 
 		////printBinnoomialHeap(root,nVertices);
 		while(e != NULL)
 		{
-			cout<< "here " ;
+//			cout<< "here " ;
 			int u = minIndex, v = e->endPoint, w = e->weight;
 	
-			cout << "u is: " << u<< " v is : "<<v<<"w is : " << w;
-			if(heapArray[v]) cout<<"| heapArray[v]:data:" << heapArray[v]->data<<endl;	
+			//			cout << "u is: " << u<< " v is : "<<v<<"w is : " << w;
+			if(heapArray[v])
+			{
+//				cout<<"| heapArray[v]:data:" << heapArray[v]->data<<endl;	
+			}
 			if(d[v] > d[u] + w) 
 			{
 				d[v] = d[u] + w;
@@ -582,15 +801,19 @@ void dijkstraBinomialHeap(graph *g,int sourceVertex)
 		}
 		visited[minIndex] = true;
 
-		cout<<endl<<endl<<"distance array is: ";
-		for(int j =0;j<g->nVertices;j++) cout<<  d[j]<<" ";
+		//		cout<<endl<<endl<<"distance array is: ";
+		for(int j =0;j<g->nVertices;j++) 
+		{
+//			cout<<  d[j]<<" ";
+		}
 
-		cout<<endl<<"bheap after k=" <<k <<endl;
-		debug(root);
-		////printBinnoomialHeap(root,g->nVertices);
+//		cout<<endl<<"bheap after k=" <<k <<endl;
+		//debug(root);
+
+//		printBinnoomialHeap(root,g->nVertices);
 	}
-	cout<<endl<<"final d array" <<endl<<endl;
-	for(int j =0;j<g->nVertices;j++) cout<<  d[j]<<" ";
-	cout<<endl;
-	////printBinnoomialHeap(root,g->nVertices);
+	//cout<<endl<<"final d array" <<endl<<endl;
+//	cout<<endl;
+//	for(int j =0;j<g->nVertices;j++) cout<<  d[j]<<" ";
+	//printBinnoomialHeap(root,g->nVertices);
 }
