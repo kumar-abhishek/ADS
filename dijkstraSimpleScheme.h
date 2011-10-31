@@ -19,7 +19,7 @@ void dijkstraSimpleScheme(graph *g,int sourceVertex)
 		visited[minIndex] = true;
 	}
 		//cout<<endl<< "d array is ";
-		cout<<endl;
-		for(int j =0;j<g->nVertices;j++) cout<<  d[j]<<" ";
+//		cout<<endl;
+//		for(int j =0;j<g->nVertices;j++) cout<<  d[j]<<" ";
 }
 

@@ -802,10 +802,10 @@ void dijkstraBinomialHeap(graph *g,int sourceVertex)
 		visited[minIndex] = true;
 
 		//		cout<<endl<<endl<<"distance array is: ";
-		for(int j =0;j<g->nVertices;j++) 
-		{
+//		for(int j =0;j<g->nVertices;j++) 
+//		{
 //			cout<<  d[j]<<" ";
-		}
+//		}
 
 //		cout<<endl<<"bheap after k=" <<k <<endl;
 		//debug(root);

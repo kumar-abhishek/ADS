@@ -1,6 +1,7 @@
 #include<iostream>
 #include<sstream>
 #include<queue>
+#include<cassert>
 using namespace std;
 
 #define MAXDEGREE 10 //max degree for a 500 vertex binomail heap cant be more than lg(500) = 9 <=10 
@@ -8,6 +9,7 @@ using namespace std;
 #define INF 99999
 
 extern int nVertices ;//TODO:remove this global variable 
+int nver ; //TODO:remove this global variable:
 
 struct fibNode
 {
@@ -37,10 +39,12 @@ fibNode * fibonacciHeapInsert(fibNode * &root,int endPoint, int distance)
 		return temp; //return the pointer to newly inserted fibNode.
 }
 
-void printFibonacciHeap(fibNode *root,int nVertices)
+void printFibonacciRec(fibNode *root,int nVertices)
 {
-	static int nver=0,level =0 ;
+	static int level =0 ;
 	if(root == NULL) return;
+//	if(nver>nVertices) return;
+	assert(nver<nVertices);
 	fibNode *storedRoot = root;
 	cout<<"| level: "<<level <<", data: " <<(root->data)<< ", distance: "<<root->distance ; 
 	do
@@ -48,7 +52,7 @@ void printFibonacciHeap(fibNode *root,int nVertices)
 		cout<<"| level: "<<level <<", data: " <<(root->data)<< ", distance: "<<root->distance ; 
 		++nver;
 		++level;
-		printFibonacciHeap(storedRoot->child,nVertices);
+		printFibonacciRec(storedRoot->child,nVertices);
 		--level;
 		root = root->next;
 	} while(root!=storedRoot);
@@ -56,12 +60,19 @@ void printFibonacciHeap(fibNode *root,int nVertices)
 	cout<<endl;
 }
 
+void printFibonacciHeap(fibNode *root,int nVertices)
+{
+	nver=0;
+	cout<<endl<<endl<<"Printing Fibonacci Heap" <<endl<<endl;
+	printFibonacciRec(root,nVertices);
+
+}
 
 
 fibNode * meldWithOriginalRoot(fibNode * &root1,fibNode * &root)
 {
 	//root1 is a root with subtree and root is root of original tree which is in the top level linked list of fibHeap.
-	cout<<endl<<"Inside meld()" <<endl;
+	//cout<<endl<<"Inside meld()" <<endl;
 	if(root == NULL) return root1;
 	if(root1 == NULL) return root;
 
@@ -78,7 +89,7 @@ fibNode * meldWithOriginalRoot(fibNode * &root1,fibNode * &root)
 
 void debug(fibNode * root)
 {
-	cout<<endl<<endl<<"inside debug function";
+	//cout<<endl<<endl<<"inside debug function";
 	if(root) cout<<"new root's data: "<< root->data<<"|root->distance: " << root->distance<<endl;
 	if( root && root->child) cout<<"new root's child data : "<<root->child->data<<"|root->child->distance: " << root->child->distance<<endl;
 	if(root && root->next) cout<<"new roots' next data : "<<root->next->data <<"|root->next->distance: " << root->next->distance<<endl;
@@ -117,7 +128,7 @@ fibNode * pairwiseCombine(fibNode * &root1, fibNode * &root2)
 				++cc;
 				if(cc>10) 
 				{
-					cout<<endl<<endl<<"!!!!! INFINITE LOOP !!!!!" << __LINE__;
+					//cout<<endl<<endl<<"!!!!! INFINITE LOOP !!!!!" << __LINE__;
 					break;
 				}
 			}
@@ -161,7 +172,7 @@ fibNode * pairwiseCombine(fibNode * &root1, fibNode * &root2)
 					++cc;
 					if(cc>10) 
 					{
-						cout<<endl<<endl<<"!!!!! INFINITE LOOP !!!!!" << __LINE__;
+						//cout<<endl<<endl<<"!!!!! INFINITE LOOP !!!!!" << __LINE__;
 						break;
 					}
 				}
@@ -178,16 +189,16 @@ fibNode * pairwiseCombine(fibNode * &root1, fibNode * &root2)
 		sSibRoot->prev = root;
 		++(root->degree);
 	}
-	cout<<"bheap inside pairwise Combine"<<endl;
-	debug(root);
-	printFibonacciHeap(root,nVertices);
-	cout<<"root->degree:  " << root->degree<<endl;
+	//cout<<"bheap inside pairwise Combine"<<endl;
+	//debug(root);
+	//printFibonacciHeap(root,nVertices);
+	//cout<<"root->degree:  " << root->degree<<endl;
 	return root;
 }
 fibNode * removeMin(fibNode * &root,int k) //delete the min fibNode and return it
 {
 	if(root == NULL) return NULL;
-	cout<<endl<<endl<<"removeMin root:" << root->data <<"| removeMin distance:  " <<root->distance <<endl <<" root->next->data: " << root->next->data<<endl ;
+	//cout<<endl<<endl<<"removeMin root:" << root->data <<"| removeMin distance:  " <<root->distance <<endl <<" root->next->data: " << root->next->data<<endl ;
 	fibNode * treeTable[MAXDEGREE];
 	for(int i=0;i<MAXDEGREE;i++) treeTable[i] = NULL;
 
@@ -195,16 +206,16 @@ fibNode * removeMin(fibNode * &root,int k) //delete the min fibNode and return i
 	fibNode *rootChild = root->child;
 	if(rootChild)
 	{ 
-		cout<<endl<<"rootChild->data: "<< root->child->data<<endl;
+		//cout<<endl<<"rootChild->data: "<< root->child->data<<endl;
 	}
-	cout<<"before return"<< toReturn->data<<endl;
+	//cout<<"before return"<< toReturn->data<<endl;
 
-	cout<< " xx: ";
+	//cout<< " xx: ";
 	fibNode * toCopy = root->next;
 
-	cout<<"before copying"<<endl;
-	debug(root);
-	printFibonacciHeap(root,nVertices);
+	//cout<<"before copying"<<endl;
+	//debug(root);
+	//printFibonacciHeap(root,nVertices);
 
 	if(root->next == root)
 	{
@@ -222,7 +233,7 @@ fibNode * removeMin(fibNode * &root,int k) //delete the min fibNode and return i
 			++cc;
 			if(cc>10) 
 			{
-				cout<<endl<<endl<<"!!!!! INFINITE LOOP !!!!!" << __LINE__;
+				//cout<<endl<<endl<<"!!!!! INFINITE LOOP !!!!!" << __LINE__;
 				break;
 			}
 		}
@@ -233,8 +244,8 @@ fibNode * removeMin(fibNode * &root,int k) //delete the min fibNode and return i
 		root = sibRoot;
 	}
 
-	cout<<"before melding"<<endl;
-	debug(root); printFibonacciHeap(root,nVertices);
+	//cout<<"before melding"<<endl;
+	//debug(root); //printFibonacciHeap(root,nVertices);
 
 /*
 	for(int i = 0;i<6;i++) if( fibHeapArray[i] )
@@ -245,8 +256,8 @@ fibNode * removeMin(fibNode * &root,int k) //delete the min fibNode and return i
 
 	if(rootChild !=NULL && root != rootChild)	root = meldWithOriginalRoot(rootChild,root); //meld the new root and old root's child
 
-	cout<<"after melding"<<endl;
-	debug(root); printFibonacciHeap(root,nVertices);
+	//cout<<"after melding"<<endl;
+	//debug(root); //printFibonacciHeap(root,nVertices);
 
 	//find new root
 	fibNode *tempRoot = root->next;
@@ -262,16 +273,16 @@ fibNode * removeMin(fibNode * &root,int k) //delete the min fibNode and return i
 	
 	//do pairwise combine
 	storedRoot = root; //store root pointer temporarily.
-	cout<<"before doing pairwise combine " <<endl;
-	debug(root);
+	//cout<<"before doing pairwise combine " <<endl;
+	//debug(root);
 	int cnt = 0;
 	while(1)
 	{
-		cout<<endl<<endl<<"count: " << cnt<<endl<<endl;
+		//cout<<endl<<endl<<"count: " << cnt<<endl<<endl;
 		if(root == NULL) break;
 		if(root->degree > MAXDEGREE || root->degree < 0) 
 		{
-			cout<<endl<<endl<<"!!!!!         INVALID DEGREE !!!!!!!!"<<endl<<endl;
+			//cout<<endl<<endl<<"!!!!!         INVALID DEGREE !!!!!!!!"<<endl<<endl;
 			break;
 		}
 		if( treeTable[root->degree] != NULL)
@@ -281,7 +292,7 @@ fibNode * removeMin(fibNode * &root,int k) //delete the min fibNode and return i
 			else
 			{
 				int tempDegree = root->degree;
-				cout<<"pairwise combining: "<<root->data<<" " <<treeTable[root->degree]->data<<endl;
+				//cout<<"pairwise combining: "<<root->data<<" " <<treeTable[root->degree]->data<<endl;
 				fibNode * x= root->next;
 				int cc=0;
 				while(x->next != root)
@@ -290,20 +301,20 @@ fibNode * removeMin(fibNode * &root,int k) //delete the min fibNode and return i
 					++cc; 
 					if(cc>10)
 					{
-						cout<<endl<<endl<<"!!!!!!! INF LOOP!!!!!!!" <<endl<<endl; 
+						//cout<<endl<<endl<<"!!!!!!! INF LOOP!!!!!!!" <<endl<<endl; 
 						break;
 					}
 				}
 				if(x->child)
 				{
-					cout<<"root->prev->child:  "<< x->child->data<<endl;
+					//cout<<"root->prev->child:  "<< x->child->data<<endl;
 				}
 				else
 				{
-					cout<<"root->prev->child is NULL"<<endl;
+					//cout<<"root->prev->child is NULL"<<endl;
 				}
 				root = pairwiseCombine(root, treeTable[root->degree]);
-				debug(root);
+				//debug(root);
 				treeTable[tempDegree] = NULL;
 			}
 		}
@@ -319,33 +330,33 @@ fibNode * removeMin(fibNode * &root,int k) //delete the min fibNode and return i
 				++cc; 
 				if(cc>10)
 				{
-					cout<<endl<<endl<<"!!!!!!! INF LOOP!!!!!!!" <<endl<<endl; 
+					//cout<<endl<<endl<<"!!!!!!! INF LOOP!!!!!!!" <<endl<<endl; 
 					break;
 				}
 			}
 			if(x->child)
 			{
-				cout<<"root->prev->child:  "<< x->child->data<<endl;
+				//cout<<"root->prev->child:  "<< x->child->data<<endl;
 			}
 			else
 			{
-				cout<<"root->prev->child is NULL"<<endl;
+				//cout<<"root->prev->child is NULL"<<endl;
 			}
 
 		}
-		cout<<endl;
-		printFibonacciHeap(root,nVertices);
-		cout<<endl;
-		debug(root);
+		//cout<<endl;
+		//printFibonacciHeap(root,nVertices);
+		//cout<<endl;
+		//debug(root);
 		++cnt;
 		//	if(cnt > 5) break;
 	}
 
-	cout<<"Bheap after pairwise combine " <<endl;
-	printFibonacciHeap(root,nVertices);
-	cout<<"after doing pariwise combine " <<endl;
-	debug(root);
-	printFibonacciHeap(root,nVertices);
+	//cout<<"Bheap after pairwise combine " <<endl;
+	//printFibonacciHeap(root,nVertices);
+	//cout<<"after doing pariwise combine " <<endl;
+	//debug(root);
+	//printFibonacciHeap(root,nVertices);
 //	for(int i = 0;i<4;i++) if( fibHeapArray[i] ) cout<<"i= "<<i <<" " <<fibHeapArray[i]->data << " "<< fibHeapArray[i]->distance<< "| ";
 //	cout<<endl;
 
@@ -362,7 +373,7 @@ fibNode * removeMin(fibNode * &root,int k) //delete the min fibNode and return i
 		++counter; 
 		if(counter>10)
 		{
-			cout<<endl<<endl<<"!!!!!!        infinite loop       !!!!!!!!!";
+			//cout<<endl<<endl<<"!!!!!!        infinite loop       !!!!!!!!!";
 			break;
 		}
 	}
@@ -380,7 +391,7 @@ void decreaseKey(fibNode * &root, fibNode * &t, int newValue )  // t being point
 	//error check
 	if(t == NULL || root == NULL) 
 	{
-		cout<<"!!! ERROR !!! NULL Value in decreaseKey";
+		//cout<<"!!! ERROR !!! NULL Value in decreaseKey";
 		return;
 	}
 
@@ -456,8 +467,8 @@ void dijkstraFibonacciHeap(graph *g,int sourceVertex)
 	for(int i = 0;i<g->nVertices;i++) fibHeapArray[i] = fibonacciHeapInsert(root,i,d[i]);
 //	cout<< "nVertices is " << g->nVertices<<" "<<endl;
 //	cout<<"1st root->data : "<<root->data<<endl;
-	printFibonacciHeap(root,nVertices) ;
-	debug(root);
+	//printFibonacciHeap(root,nVertices) ;
+	//debug(root);
 //	cout<<endl;
 	
 	for(int k =0;k<g->nVertices;k++)
@@ -466,10 +477,10 @@ void dijkstraFibonacciHeap(graph *g,int sourceVertex)
 		for(int i = 0;i<g->nVertices;i++) 
 			if( fibHeapArray[i] ) 
 			{
-				cout<<"i= "<<i <<" " <<fibHeapArray[i]->data << " "<< fibHeapArray[i]->distance<< "| ";
+				//cout<<"i= "<<i <<" " <<fibHeapArray[i]->data << " "<< fibHeapArray[i]->distance<< "| ";
 			}
 		//		cout<<endl;
-		printFibonacciHeap(root,nVertices) ;
+		//printFibonacciHeap(root,nVertices) ;
 		fibNode * min = removeMin(root,k);
 		if(min == NULL) break; //nothing in heap, break out .
 //		cout<<"for loop  "<<endl; 
@@ -477,10 +488,10 @@ void dijkstraFibonacciHeap(graph *g,int sourceVertex)
 //		cout<<"minIndex is "<<minIndex<<endl    ; //<<"| min->distance is "<<min->distance<< " "<< "min->child->data "<< min->child->data<< endl ;
 		fibHeapArray[minIndex] = NULL; //set the pointer to NULL as it has been removed from heap
 		struct edgeNode *e = g->edges[minIndex] , *temp;temp = e;
-		cout<<endl<<"before decrease key: bheap after k=" <<k <<endl;
-		if(e) cout<<"e->endPoint: "<< e->endPoint << "e->weight: "<< e->weight<< endl;
-		debug(root); 
-		printFibonacciHeap(root,nVertices);
+		//cout<<endl<<"before decrease key: bheap after k=" <<k <<endl;
+//		if(e) cout<<"e->endPoint: "<< e->endPoint << "e->weight: "<< e->weight<< endl;
+		//debug(root); 
+		//printFibonacciHeap(root,nVertices);
 		while(e != NULL)
 		{
 //			cout<< "here " ;
@@ -507,12 +518,12 @@ void dijkstraFibonacciHeap(graph *g,int sourceVertex)
 		}
 
 //		cout<<endl<<"bheap after k=" <<k <<endl;
-		debug(root);
+		//debug(root);
 
-//		printFibonacciHeap(root,g->nVertices);
+//		//printFibonacciHeap(root,g->nVertices);
 	}
-	cout<<endl;
-	cout<<endl<<"final d array: ";
-	for(int j =0;j<g->nVertices;j++) cout<<  d[j]<<" ";
-	printFibonacciHeap(root,g->nVertices);
+	//cout<<endl;
+	//cout<<endl<<"final d array: ";
+//	for(int j =0;j<g->nVertices;j++) cout<<  d[j]<<" ";
+	//printFibonacciHeap(root,g->nVertices);
 }
