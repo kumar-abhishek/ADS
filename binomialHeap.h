@@ -34,7 +34,7 @@ node * binomialHeapInsert(node * &root,int endPoint, int distance)
 		return temp; //return the pointer to newly inserted node.
 }
 
-void printBinnoomialHeap(node *root,int nVertices)
+void printBinomialHeap(node *root,int nVertices)
 {
 	static int nver=0,level =0 ;
 	if(nver>nVertices) return;
@@ -66,7 +66,7 @@ node * meld(node * &root1,node * &root2)
 	root1->sibling->sibling = root2;
 	root2->sibling = temp1;
 	temp1->sibling = root1;
-	if(root1->data < root2->data) return root1;
+	if(root1->distance < root2->distance) return root1;
 	else return root2;
 }
 

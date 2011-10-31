@@ -9,15 +9,15 @@ using namespace std;
 
 int d[MAXV];
 struct edgeNode {
-	int endPoint; /* adjacency info */
-	int weight; /* edge weight, if any */
-	struct edgeNode *next;     /* next edge in list */
+	int endPoint; /* endPoint of an edge */
+	int weight; /* edge weight */
+	struct edgeNode *next;     /* pointer to next edge in list */
 } ;
 
 struct graph {
 	struct edgeNode *edges[MAXV+1];   /* adjacency info */
-	int nVertices; /* number of vertices in graph */
-	int nEdges ; /* number of edges in graph */
+	int nVertices; /* number of vertices in the graph */
+	int nEdges ; /* number of edges in the graph */
 } ;
 
 void initializeGraph(graph *g)
@@ -29,7 +29,7 @@ void initializeGraph(graph *g)
 
 void insertEdge(graph *g, int x, int y, int cost)
 {
-	edgeNode *p; /* temporary pointer */
+	edgeNode *p; /* temp pointer */
 	p = new edgeNode;
 	p->weight = cost;
 	p->endPoint = y;
